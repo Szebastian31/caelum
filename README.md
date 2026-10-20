@@ -1,12 +1,19 @@
-# Caelum ✦
+# Caelum
+<p align="center">
+  <img src="icons/icon-512.png" alt="Caelum" width="160">
+</p>
 
-**Hold your phone up and the real sky over you lines up behind the glass.**
+<p align="center"><b>Hold your phone up and the real sky over you lines up behind the glass.</b></p>
 
 Caelum is a free sky map that runs in your phone's browser. Point the phone at any part of the sky and it shows you which stars, planets and constellations are there, even in daylight or through clouds.
 
-### 👉 [Open Caelum](https://szebastian31.github.io/caelum/)
+<p align="center">
+  <a href="https://szebastian31.github.io/caelum/">
+    <img src="https://img.shields.io/badge/Open%20Caelum-Launch%20the%20app-3a4f92?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Open Caelum">
+  </a>
+</p>
 
-No download from an app store, no account, no ads.
+<p align="center">No download from an app store, no account, no ads.</p>
 
 <p align="center">
   <img src="screenshots/sky.svg" width="250" alt="Pointing the phone at Orion: the sky view with stars, constellation lines and the compass accuracy badge">
@@ -93,3 +100,7 @@ Positions use J2000 coordinates with precession applied, plus low-precision form
 After changing any file, bump `VERSION` in `sw.js` (e.g. `caelum-v3`) so installed copies update.
 
 </details>
+
+<p align="center">
+  <img src="icons/icon-512.png" alt="Caelum" width="72">
+</p>
