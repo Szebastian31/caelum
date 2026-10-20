@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Caelum</title>
+<meta name="description" content="Hold your phone up and the real sky lines up behind the glass.">
+<meta name="theme-color" content="#070d26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Caelum">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+:root{
+  --page:#efe8da; --ink:#1d2230; --muted:#6c6a66;
+  --sky-top:#0b1433; --sky-bot:#22336b; --ground:#0a0f1f;
+  --fg:#eef3ff; --fg2:rgba(238,243,255,.62); --glass:rgba(255,255,255,.10); --glass-b:rgba(255,255,255,.18);
+  --accent:#8fd6ff; --good:#5fe3a1; --warn:#ffc061;
+  --serif:"New York","Iowan Old Style","Palatino","Georgia",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+  --mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--page);color:var(--ink);font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:56px;padding:32px 32px 60px;overflow:hidden}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(1200px 700px at 70% 20%,rgba(255,255,255,.7),transparent 60%),radial-gradient(900px 600px at 10% 90%,rgba(196,170,120,.25),transparent 60%);pointer-events:none}
+
+/* side panel */
+.side{position:relative;max-width:340px}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.brand svg{width:56px;height:56px;border-radius:14px;box-shadow:0 10px 30px rgba(20,30,70,.25)}
+.brand h1{font-family:var(--serif);font-weight:400;font-size:40px;letter-spacing:-.5px}
+.side p.lede{font-family:var(--serif);font-size:21px;line-height:1.35;margin-bottom:22px}
+.side .how{font-size:13.5px;line-height:1.55;color:var(--muted)}
+.side .how b{color:var(--ink);font-weight:600}
+.side .how li{list-style:none;padding-left:18px;position:relative;margin-bottom:7px}
+.side .how li::before{content:"✦";position:absolute;left:0;font-size:10px;top:3px;color:#b4532a}
+.side .fam{margin-top:22px;font-size:12px;color:var(--muted);letter-spacing:.3px}
+
+/* phone */
+.phone{position:relative;width:390px;height:844px;max-height:calc(100vh - 70px);aspect-ratio:390/844;border-radius:54px;padding:12px;background:#111;box-shadow:0 40px 90px rgba(25,30,60,.35),0 0 0 2px #2a2a2a inset}
+.screen{position:relative;width:100%;height:100%;border-radius:43px;overflow:hidden;background:linear-gradient(var(--sky-top),var(--sky-bot));color:var(--fg);isolation:isolate}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:50}
+@media (max-width:560px){
+  body{padding:0;gap:0} .side{display:none}
+  html,body{overscroll-behavior:none;background:#070d26}
+  .phone{width:100vw;height:100vh;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none;aspect-ratio:auto}
+  .top{top:calc(env(safe-area-inset-top) + 14px)} .rail{top:calc(env(safe-area-inset-top) + 92px)} .panel{padding-top:calc(env(safe-area-inset-top) + 20px)}
+  .toast{top:calc(env(safe-area-inset-top) + 64px)}
+  .screen{border-radius:0} .notch{display:none}
+}
+
+canvas#sky{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas#sky:active{cursor:grabbing}
+
+/* overlays */
+.top{position:absolute;top:54px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start;z-index:5;pointer-events:none}
+.top > *{pointer-events:auto}
+.where{font-family:var(--serif);font-size:24px;line-height:1.05;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.where small{display:block;font-family:var(--sans);font-size:12px;color:var(--fg2);margin-top:4px;letter-spacing:.2px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:6px 10px;border-radius:20px;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;white-space:nowrap}
+.badge i{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good)}
+.badge.warn i{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+.badge.idle i{background:var(--fg2);box-shadow:none}
+
+.rail{position:absolute;right:14px;top:132px;display:flex;flex-direction:column;gap:10px;z-index:5}
+.fab{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--fg);cursor:pointer;transition:transform .15s}
+.fab:active{transform:scale(.92)}
+.fab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.fab.on{background:var(--fg);color:var(--sky-top)}
+
+/* time ruler */
+.time{position:absolute;left:0;right:0;bottom:150px;z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.time .label{font-size:12px;color:var(--fg2);display:flex;gap:8px;align-items:center;pointer-events:auto}
+.time .label b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
+.chip{font-size:11px;padding:3px 9px;border-radius:12px;background:var(--fg);color:var(--sky-top);font-weight:600;cursor:pointer;display:none}
+.ruler{pointer-events:auto;width:300px;height:30px;border-radius:15px;overflow:hidden;position:relative;cursor:ew-resize;touch-action:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.ruler canvas{width:100%;height:100%}
+.ruler::after{content:"";position:absolute;left:50%;top:3px;bottom:3px;width:2px;margin-left:-1px;border-radius:1px;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+/* pointing bar (mini bar) */
+.pointing{position:absolute;left:12px;right:12px;bottom:90px;height:52px;border-radius:18px;z-index:6;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer}
+.pointing .dot{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:14px}
+.pointing .t{flex:1;min-width:0}
+.pointing .t b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pointing .t span{font-size:11.5px;color:var(--fg2)}
+.pointing .dir{font-family:var(--mono);font-size:12px;color:var(--fg2);text-align:right;line-height:1.3}
+
+/* tabs */
+.tabs{position:absolute;left:0;right:0;bottom:0;height:84px;padding:8px 30px 30px;display:flex;justify-content:space-around;z-index:20;background:linear-gradient(transparent,rgba(0,0,0,.28))}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:var(--fg2);cursor:pointer;position:relative;width:70px}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--fg)}
+.tab.on::after{content:"";position:absolute;bottom:-8px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+
+/* panels */
+.panel{position:absolute;inset:0;z-index:10;padding:60px 18px 110px;overflow-y:auto;background:linear-gradient(var(--sky-top),var(--sky-bot));display:none;scrollbar-width:none}
+.panel::-webkit-scrollbar{display:none}
+.panel.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel h2{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:-.3px}
+.panel .sub{font-size:13px;color:var(--fg2);margin:4px 0 20px}
+.card{border-radius:22px;padding:16px;background:var(--glass);border:1px solid var(--glass-b);margin-bottom:12px}
+.card h3{font-size:11px;font-weight:600;letter-spacing:1.1px;text-transform:uppercase;color:var(--fg2);margin-bottom:12px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.07);cursor:pointer}
+.row:first-of-type{border-top:0}
+.row .ic{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center}
+.row .tx{flex:1;min-width:0}
+.row .tx b{display:block;font-size:14.5px;font-weight:500}
+.row .tx span{font-size:12px;color:var(--fg2)}
+.row .rt{font-size:12px;color:var(--fg2);text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;background:rgba(95,227,161,.16);color:var(--good);font-weight:600}
+.pill.amber{background:rgba(255,192,97,.16);color:var(--warn)}
+.pill.dim{background:rgba(255,255,255,.08);color:var(--fg2)}
+.moon{display:flex;gap:16px;align-items:center}
+.moon canvas{width:76px;height:76px;flex:none}
+.moon .big{font-family:var(--serif);font-size:24px}
+.moon .sm{font-size:12.5px;color:var(--fg2);line-height:1.5;margin-top:3px}
+
+.skins{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.skin{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:var(--fg2);cursor:pointer}
+.skin .sw{width:52px;height:52px;border-radius:16px;border:2px solid transparent;position:relative;overflow:hidden}
+.skin.on .sw{border-color:var(--fg)}
+.skin.on{color:var(--fg)}
+.tog{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(255,255,255,.07);font-size:14px}
+.tog:first-of-type{border-top:0}
+.tog small{display:block;font-size:11.5px;color:var(--fg2);margin-top:2px}
+.sw-t{width:46px;height:28px;border-radius:14px;background:rgba(255,255,255,.18);position:relative;cursor:pointer;flex:none;transition:background .2s}
+.sw-t::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.sw-t.on{background:var(--good)}
+.sw-t.on::after{transform:translateX(18px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 16px;border-radius:14px;background:var(--fg);color:var(--sky-top);font-weight:600;font-size:14px;cursor:pointer;border:0}
+.btn.ghost{background:var(--glass);color:var(--fg);border:1px solid var(--glass-b)}
+
+/* sheets */
+.scrim{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.show{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;border-radius:30px 30px 0 0;padding:10px 20px 40px;max-height:78%;overflow-y:auto;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.25,1);
+  background:linear-gradient(color-mix(in srgb,var(--sky-bot) 82%,#fff 6%),var(--sky-top));border-top:1px solid var(--glass-b);scrollbar-width:none}
+.sheet.show{transform:none}
+.grab{width:38px;height:5px;border-radius:3px;background:var(--fg2);opacity:.5;margin:0 auto 14px}
+.sheet h2{font-family:var(--serif);font-weight:400;font-size:32px;line-height:1.05}
+.sheet .kind{font-size:12.5px;color:var(--fg2);margin:5px 0 16px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.fact{border-radius:16px;padding:11px 12px;background:var(--glass);border:1px solid var(--glass-b)}
+.fact span{display:block;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--fg2);margin-bottom:3px}
+.fact b{font-size:16px;font-weight:500;font-variant-numeric:tabular-nums}
+.story{font-family:var(--serif);font-size:17px;line-height:1.4;margin-bottom:14px}
+.honest{font-size:12px;color:var(--fg2);line-height:1.5;padding:10px 12px;border-radius:14px;border:1px dashed var(--glass-b);margin-bottom:14px}
+.sheet .acts{display:flex;gap:8px}
+.search{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--glass-b);background:var(--glass);color:var(--fg);font-size:15px;outline:none;margin-bottom:8px;font-family:var(--sans)}
+.search::placeholder{color:var(--fg2)}
+
+.toast{position:absolute;left:50%;top:104px;transform:translate(-50%,-10px);z-index:40;padding:9px 14px;border-radius:16px;font-size:13px;background:var(--fg);color:var(--sky-top);font-weight:600;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* atlas & glacier (light skins) tune glass */
+.light{--glass:rgba(40,30,10,.06);--glass-b:rgba(40,30,10,.14)}
+.light .row,.light .tog{border-color:rgba(40,30,10,.08)}
+.light .sw-t{background:rgba(40,30,10,.15)}
+.light .tabs{background:linear-gradient(transparent,rgba(255,255,255,.35))}
+
+@media print{body{overflow:visible}.phone{box-shadow:none}}
+</style>
+</head>
+<body>
+
+<aside class="side">
+  <div class="brand">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1433"/><stop offset="1" stop-color="#3a4f92"/></linearGradient><radialGradient id="lr" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="64" height="64" rx="14" fill="url(#lg)"/><circle cx="32" cy="34" r="17" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.4"/><path d="M15 34 Q32 26 49 34" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/><circle cx="32" cy="30" r="9" fill="url(#lr)"/><path d="M32 22 L33.6 28.4 L40 30 L33.6 31.6 L32 38 L30.4 31.6 L24 30 L30.4 28.4Z" fill="#fff"/><circle cx="21" cy="21" r="1.2" fill="#fff" opacity=".8"/><circle cx="45" cy="44" r="1" fill="#8fd6ff"/><circle cx="46" cy="19" r=".9" fill="#fff" opacity=".7"/></svg>
+    <h1>Caelum</h1>
+  </div>
+  <p class="lede">Hold your phone up and the real sky over you lines up behind the glass. Every star is calculated for this exact minute, and the app tells you how accurate the compass is.</p>
+  <ul class="how">
+    <li><b>Here on the Mac:</b> drag to look around, scroll or pinch to zoom.</li>
+    <li><b>On a phone:</b> tap the motion button and point it at the sky.</li>
+    <li><b>Drag the time ruler</b> to fast-forward the night, and tap any star or planet.</li>
+    <li><b>Find</b> something and an arrow leads you to it, with a tick when it's centred.</li>
+  </ul>
+  <p class="fam">A sibling to Consensus Weather, Fidelis and Vestis</p>
+</aside>
+
+<div class="phone">
+  <div class="screen" id="screen">
+    <div class="notch"></div>
+    <canvas id="sky"></canvas>
+
+    <div class="top" id="top">
+      <div class="where"><span id="locName">Gliwice</span><small id="clock">—</small></div>
+      <div class="badge idle" id="acc"><i></i><span id="accTxt">Drag mode</span></div>
+    </div>
+
+    <div class="rail" id="rail">
+      <div class="fab" id="bFind" title="Find"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></div>
+      <div class="fab" id="bMotion" title="Motion"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M3 9c-1 2-1 4 0 6M21 9c1 2 1 4 0 6"/></svg></div>
+      <div class="fab" id="bLines" title="Constellations"><svg viewBox="0 0 24 24"><circle cx="5" cy="17" r="1.6"/><circle cx="11" cy="9" r="1.6"/><circle cx="19" cy="6" r="1.6"/><circle cx="16" cy="18" r="1.6"/><path d="M6.2 15.8L9.9 10.3M12.5 8.4l5-1.8M12 10.5l3.2 6"/></svg></div>
+      <div class="fab" id="bDemo" title="Show me the motion"><svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg></div>
+    </div>
+
+    <div class="time" id="time">
+      <div class="label"><b id="tLabel">Now</b><span id="tDelta"></span><span class="chip" id="tNow">Back to now</span></div>
+      <div class="ruler" id="ruler"><canvas id="rulerC"></canvas></div>
+    </div>
+
+    <div class="pointing" id="pointing">
+      <div class="dot" id="pDot">✦</div>
+      <div class="t"><b id="pName">—</b><span id="pSub">Looking around</span></div>
+      <div class="dir" id="pDir">—</div>
+    </div>
+
+    <!-- Tonight -->
+    <section class="panel" id="pTonight">
+      <h2>Tonight</h2>
+      <div class="sub" id="tonSub">What's worth looking up for</div>
+      <div class="card"><h3>Moon</h3><div class="moon"><canvas id="moonC" width="152" height="152"></canvas><div><div class="big" id="moonName">—</div><div class="sm" id="moonInfo">—</div></div></div></div>
+      <div class="card"><h3>Planets</h3><div id="planetList"></div></div>
+      <div class="card"><h3>Brightest stars up at 22:00</h3><div id="starList"></div></div>
+      <div class="card"><h3>Easy constellations</h3><div id="constList"></div></div>
+    </section>
+
+    <!-- Profile -->
+    <section class="panel" id="pProfile">
+      <h2>Profile</h2>
+      <div class="sub">Skins, location and how the sky is drawn</div>
+      <div class="card"><h3>Skins</h3><div class="skins" id="skins"></div></div>
+      <div class="card"><h3>Location</h3>
+        <div class="tog"><div><span id="locLine">Gliwice, Poland</span><small id="locCoords">50.29° N · 18.67° E</small></div><button class="btn ghost" id="bLocate" style="padding:8px 12px;font-size:13px">Use my location</button></div>
+      </div>
+      <div class="card"><h3>Sky</h3><div id="toggles"></div></div>
+      <div class="card"><h3>How accurate is this?</h3>
+        <div class="honest" style="margin:0;border-style:solid">Star and planet positions are calculated on your phone for the current minute and are good to about a third of a degree, smaller than the Moon. The weak point is the phone's compass: it's usually off by 5 to 15° and worse near metal or magnets. The badge at the top shows how far off it thinks it is. Moving the phone in a figure 8 recalibrates it.</div>
+      </div>
+    </section>
+
+    <div class="tabs" id="tabs">
+      <div class="tab on" data-p="sky"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.6L12 17l-1.9-5.4L4.5 10l5.6-1.4z"/><path d="M4 20h16"/></svg>Sky</div>
+      <div class="tab" data-p="pTonight"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>Tonight</div>
+      <div class="tab" data-p="pProfile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg>Profile</div>
+    </div>
+
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="astro.js"></script>
+<script src="app.js"></script>
+<script src="ui.js"></script>
+<script>if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
+</body>
+</html>
