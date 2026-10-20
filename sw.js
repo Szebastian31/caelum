@@ -1,5 +1,5 @@
 // Caelum offline cache. Bump VERSION whenever you change a file so phones pick up the update.
-const VERSION = "caelum-v1";
+const VERSION = "caelum-v2";
 const FILES = ["./","index.html","data.js","astro.js","app.js","ui.js","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {

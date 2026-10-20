@@ -303,7 +303,7 @@ function onOrient(e){
   const u=[-cB*sA, cA*cB, sB];
   const f=[-(cG*sA*sB+cA*sG), -(sA*sG-cA*cG*sB), -(cB*cG)];
   if(!gyro) gyro={r,u,f};
-  const k=0.22; const lerp=(p,q)=>nrm(p.map((v,i)=>v+(q[i]-v)*k));
+  const k=0.35; const lerp=(p,q)=>nrm(p.map((v,i)=>v+(q[i]-v)*k));
   const nf=lerp(gyro.f,f); let nr=lerp(gyro.r,r); nr=nrm(cross(cross(nf,nr),nf)); // keep orthogonal
   gyro={f:nf, r:nr, u:cross(nr,nf)};
   updateBadge();
@@ -381,5 +381,16 @@ let toastT; function toast(m){ const t=$("toast"); t.textContent=m; t.classList.
 $("bMotion").onclick = enableMotion;
 $("bLines").onclick = ()=>{ S.lines=!S.lines; $("bLines").classList.toggle("on",!S.lines); tick(); toast(S.lines?"Constellations on":"Constellations off"); };
 $("bDemo").onclick = ()=>{ if(S.mode==="motion") return; S.demo={az:S.az,alt:S.alt}; tick(); };
+
+// ---------- start in motion mode on phones ----------
+const isPhone = matchMedia("(pointer:coarse)").matches && typeof DeviceOrientationEvent!=="undefined";
+const needsTap = isPhone && typeof DeviceOrientationEvent.requestPermission==="function"; // iPhone asks every visit
+$("startGo").onclick = async ()=>{ $("start").classList.remove("show"); try{ localStorage.setItem("caelum-motion","on"); }catch(e){} if(S.mode!=="motion") await enableMotion(); };
+$("startSkip").onclick = ()=>{ $("start").classList.remove("show"); try{ localStorage.setItem("caelum-motion","off"); }catch(e){} };
+if(isPhone && window.isSecureContext){
+  let pref=null; try{ pref=localStorage.getItem("caelum-motion"); }catch(e){}
+  if(pref==="on" && !needsTap) enableMotion();           // Android: straight into motion
+  else if(pref!=="off") $("start").classList.add("show"); // first visit, or iPhone needing a tap
+}
 
 requestAnimationFrame(frame); requestAnimationFrame(drawRuler);
