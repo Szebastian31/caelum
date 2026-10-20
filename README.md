@@ -28,6 +28,10 @@ Caelum is a free sky map for your phone. Point it at any part of the sky and it 
 <p align="center"><sub>Point at the sky · See what's up tonight · Tap any star (shown in the Atlas style)</sub></p>
 
 ---
+<p align="center">☕️ You can support me and Buy me a coffee ☕️</p>
+  <p align="center">https://buycoffee.to/szebastian</p>
+
+---
 
 ## Getting started
 
