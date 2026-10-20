@@ -8,6 +8,15 @@ Caelum is a free sky map that runs in your phone's browser. Point the phone at a
 
 No download from an app store, no account, no ads.
 
+<p align="center">
+  <img src="screenshots/sky.svg" width="250" alt="Pointing the phone at Orion: the sky view with stars, constellation lines and the compass accuracy badge">
+  &nbsp;
+  <img src="screenshots/tonight.svg" width="250" alt="The Tonight tab: Moon phase, planets and easy constellations for 22:00">
+  &nbsp;
+  <img src="screenshots/atlas.svg" width="250" alt="Tapping Betelgeuse in the Atlas style: height, direction, distance and when its light left">
+</p>
+<p align="center"><sub>Point at the sky · See what's up tonight · Tap any star (shown in the Atlas style)</sub></p>
+
 ---
 
 ## Getting started

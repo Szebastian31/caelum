@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 864" width="410" height="864">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070d26"/><stop offset="1" stop-color="#1f3170"/></linearGradient>
+  <clipPath id="scr"><rect x="10" y="10" width="390" height="844" rx="46"/></clipPath>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6"/></filter>
+</defs>
+<rect width="410" height="864" rx="56" fill="#111"/>
+<g clip-path="url(#scr)">
+<g transform="translate(10 10)" font-family="-apple-system,BlinkMacSystemFont,Helvetica,sans-serif">
+  <rect width="390" height="844" fill="url(#sky)"/>
+  <text x="18" y="102" font-family="Georgia,serif" font-size="34" fill="#eef3ff">Tonight</text>
+  <text x="18" y="124" font-size="13" fill="#eef3ff" fill-opacity=".62">Gliwice · Tuesday 20 October, 22:00</text>
+
+  <!-- Moon -->
+  <rect x="18" y="144" width="354" height="122" rx="22" fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"/>
+  <text x="34" y="170" font-size="11" font-weight="600" letter-spacing="1.1" fill="#eef3ff" fill-opacity=".62">MOON</text>
+  <circle cx="72" cy="218" r="30" fill="#fbf6e8" opacity=".25" filter="url(#glow)"/>
+  <circle cx="72" cy="218" r="30" fill="#fff" fill-opacity=".08"/>
+  <path d="M72 188 A30 30 0 0 1 72 248 A11 30 0 0 1 72 188Z" fill="#fbf6e8"/>
+  <text x="118" y="206" font-family="Georgia,serif" font-size="24" fill="#eef3ff">Waxing gibbous</text>
+  <text x="118" y="228" font-size="12.5" fill="#eef3ff" fill-opacity=".62">68% lit · 24° up in the SSE at 22:00</text>
+  <text x="118" y="246" font-size="12.5" fill="#eef3ff" fill-opacity=".62">Faint stars partly washed out.</text>
+
+  <!-- Planets -->
+  <rect x="18" y="278" width="354" height="300" rx="22" fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"/>
+  <text x="34" y="304" font-size="11" font-weight="600" letter-spacing="1.1" fill="#eef3ff" fill-opacity=".62">PLANETS</text>
+  <g>
+    <circle cx="51" cy="336" r="17" fill="#f3d9a0" fill-opacity=".14"/><text x="51" y="341" text-anchor="middle" font-size="15" fill="#f3d9a0">♄</text>
+    <text x="80" y="332" font-size="14.5" font-weight="500" fill="#eef3ff">Saturn</text><text x="80" y="349" font-size="12" fill="#eef3ff" fill-opacity=".62">36° up in the SE · mag 0.6</text>
+    <rect x="318" y="326" width="38" height="18" rx="9" fill="#5fe3a1" fill-opacity=".16"/><text x="337" y="339" text-anchor="middle" font-size="10.5" font-weight="600" fill="#5fe3a1">Easy</text>
+    <line x1="34" y1="364" x2="356" y2="364" stroke="#fff" stroke-opacity=".07"/>
+
+    <circle cx="51" cy="392" r="17" fill="#ffe2b8" fill-opacity=".14"/><text x="51" y="397" text-anchor="middle" font-size="15" fill="#ffe2b8">♃</text>
+    <text x="80" y="388" font-size="14.5" font-weight="500" fill="#eef3ff">Jupiter</text><text x="80" y="405" font-size="12" fill="#eef3ff" fill-opacity=".62">Very low in the ENE · mag −2.3</text>
+    <rect x="320" y="382" width="36" height="18" rx="9" fill="#ffc061" fill-opacity=".16"/><text x="338" y="395" text-anchor="middle" font-size="10.5" font-weight="600" fill="#ffc061">Low</text>
+    <line x1="34" y1="420" x2="356" y2="420" stroke="#fff" stroke-opacity=".07"/>
+
+    <circle cx="51" cy="448" r="17" fill="#ff9a6b" fill-opacity=".14"/><text x="51" y="453" text-anchor="middle" font-size="15" fill="#ff9a6b">♂</text>
+    <text x="80" y="444" font-size="14.5" font-weight="500" fill="#eef3ff">Mars</text><text x="80" y="461" font-size="12" fill="#eef3ff" fill-opacity=".62">Rises 03:10 · mag 1.4</text>
+    <rect x="310" y="438" width="46" height="18" rx="9" fill="#fff" fill-opacity=".08"/><text x="333" y="451" text-anchor="middle" font-size="10.5" font-weight="600" fill="#eef3ff" fill-opacity=".62">Below</text>
+    <line x1="34" y1="476" x2="356" y2="476" stroke="#fff" stroke-opacity=".07"/>
+
+    <circle cx="51" cy="504" r="17" fill="#fff3d6" fill-opacity=".14"/><text x="51" y="509" text-anchor="middle" font-size="15" fill="#fff3d6">♀</text>
+    <text x="80" y="500" font-size="14.5" font-weight="500" fill="#eef3ff">Venus</text><text x="80" y="517" font-size="12" fill="#eef3ff" fill-opacity=".62">Rises 06:20 · mag −3.9</text>
+    <rect x="310" y="494" width="46" height="18" rx="9" fill="#fff" fill-opacity=".08"/><text x="333" y="507" text-anchor="middle" font-size="10.5" font-weight="600" fill="#eef3ff" fill-opacity=".62">Below</text>
+    <line x1="34" y1="532" x2="356" y2="532" stroke="#fff" stroke-opacity=".07"/>
+
+    <circle cx="51" cy="556" r="17" fill="#cfc6b8" fill-opacity=".14"/><text x="51" y="561" text-anchor="middle" font-size="15" fill="#cfc6b8">☿</text>
+    <text x="80" y="552" font-size="14.5" font-weight="500" fill="#eef3ff">Mercury</text><text x="80" y="569" font-size="12" fill="#eef3ff" fill-opacity=".62">Too close to the Sun tonight</text>
+  </g>
+
+  <!-- Constellations -->
+  <rect x="18" y="590" width="354" height="160" rx="22" fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"/>
+  <text x="34" y="616" font-size="11" font-weight="600" letter-spacing="1.1" fill="#eef3ff" fill-opacity=".62">EASY CONSTELLATIONS</text>
+  <circle cx="51" cy="648" r="17" fill="#fff" fill-opacity=".07"/><text x="51" y="653" text-anchor="middle" font-size="14" fill="#eef3ff">✧</text>
+  <text x="80" y="644" font-size="14.5" font-weight="500" fill="#eef3ff">Cassiopeia</text><text x="80" y="661" font-size="12" fill="#eef3ff" fill-opacity=".62">A bright W or M shape</text>
+  <text x="356" y="644" text-anchor="end" font-size="12" fill="#eef3ff" fill-opacity=".62">NE</text><text x="356" y="660" text-anchor="end" font-size="12" fill="#eef3ff" fill-opacity=".62">72°</text>
+  <line x1="34" y1="676" x2="356" y2="676" stroke="#fff" stroke-opacity=".07"/>
+  <circle cx="51" cy="704" r="17" fill="#fff" fill-opacity=".07"/><text x="51" y="709" text-anchor="middle" font-size="14" fill="#eef3ff">✧</text>
+  <text x="80" y="700" font-size="14.5" font-weight="500" fill="#eef3ff">Pegasus</text><text x="80" y="717" font-size="12" fill="#eef3ff" fill-opacity=".62">The Great Square, big and empty inside</text>
+  <text x="356" y="700" text-anchor="end" font-size="12" fill="#eef3ff" fill-opacity=".62">SSE</text><text x="356" y="716" text-anchor="end" font-size="12" fill="#eef3ff" fill-opacity=".62">58°</text>
+
+  <!-- tabs -->
+  <rect x="0" y="760" width="390" height="84" fill="#070d26" fill-opacity=".72"/>
+  <line x1="0" y1="760" x2="390" y2="760" stroke="#fff" stroke-opacity=".15"/>
+  <g font-size="10.5" text-anchor="middle"><text x="75" y="808" fill="#eef3ff" fill-opacity=".62">Sky</text><text x="195" y="808" fill="#eef3ff">Tonight</text><text x="315" y="808" fill="#eef3ff" fill-opacity=".62">Profile</text></g>
+  <g stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M75 775l1.9 5.6 5.6 1.4-5.6 1.6L75 789l-1.9-5.4-5.6-1.6 5.6-1.4zM67 792h16" stroke="#eef3ff" stroke-opacity=".62"/>
+    <path d="M203 786.5A8 8 0 1 1 192.5 776a6.5 6.5 0 0 0 10.5 10.5z" stroke="#eef3ff"/>
+    <circle cx="315" cy="780.5" r="3.8" stroke="#eef3ff" stroke-opacity=".62"/><path d="M307.5 792c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" stroke="#eef3ff" stroke-opacity=".62"/>
+  </g>
+  <circle cx="195" cy="818" r="2" fill="#8fd6ff"/>
+</g>
+</g>
+<rect x="146" y="20" width="118" height="34" rx="17" fill="#000"/>
+</svg>
