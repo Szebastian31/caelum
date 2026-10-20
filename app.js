@@ -96,7 +96,7 @@ function frame(ts){
   // Milky Way
   if(S.milky){
     ctx.globalCompositeOperation = sk.ink? "multiply":"lighter";
-    for(const p of MW){ horiz(p,t,lst); if(p.alt<-2 && S.ground) continue; const s=project(p.v); if(s.z<0||s.x<-20||s.x>W+20||s.y<-20||s.y>H+20) continue;
+    for(const p of MW){ horiz(p,t,lst); const s=project(p.v); if(s.z<0||s.x<-20||s.x>W+20||s.y<-20||s.y>H+20) continue;
       const r = p.r*zf*1.6; const a = p.a*0.10*darkness*(sk.ink?1.6:1);
       const rg = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r); rg.addColorStop(0,`rgba(${sk.mw},${a})`); rg.addColorStop(1,`rgba(${sk.mw},0)`);
       ctx.fillStyle=rg; ctx.fillRect(s.x-r,s.y-r,2*r,2*r); }
@@ -108,7 +108,7 @@ function frame(ts){
   for(const s of STARS) horiz(s,t,lst);
   if(S.lines){
     ctx.lineWidth = 1; ctx.strokeStyle = sk.line; ctx.beginPath();
-    for(const [a,b] of LINES){ if(S.ground && a.alt<0 && b.alt<0) continue; const pa=project(a.v), pb=project(b.v); if(pa.z<-0.1||pb.z<-0.1) continue;
+    for(const [a,b] of LINES){ const pa=project(a.v), pb=project(b.v); if(pa.z<-0.1||pb.z<-0.1) continue;
       const dx=pb.x-pa.x, dy=pb.y-pa.y, L=Math.hypot(dx,dy); if(L>W*1.5) continue; const gap=Math.min(5,L*0.2)/L;
       ctx.moveTo(pa.x+dx*gap,pa.y+dy*gap); ctx.lineTo(pb.x-dx*gap,pb.y-dy*gap); }
     ctx.stroke();
@@ -116,20 +116,20 @@ function frame(ts){
   STARS.forEach((s,i)=>{
     const p = project(s.v); if(p.z<0||p.x<-10||p.x>W+10||p.y<-10||p.y>H+10) return;
     const below = s.alt<0; let r = Math.max(0.7,(4.6-s.mag)*0.78)*zf;
-    let a = starAlpha*(below&&S.ground?0.22:1)*(0.86+0.14*Math.sin(tw*2.3+i*1.7));
+    let a = starAlpha*(below&&S.ground?0.8:1)*(0.86+0.14*Math.sin(tw*2.3+i*1.7));
     const col = sk.ink? INK_COL[s.col] : (sk.red? "#ff4b3a" : STAR_COL[s.col]);
     ctx.globalAlpha = a;
     if(s.mag<1.6 && !sk.ink){ const gr = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*4); gr.addColorStop(0,col); gr.addColorStop(.25,col+"55"); gr.addColorStop(1,col+"00"); ctx.fillStyle=gr; ctx.fillRect(p.x-r*4,p.y-r*4,r*8,r*8); }
     ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p.x,p.y,r,0,7); ctx.fill();
     ctx.globalAlpha = 1;
     screenObjs.push({o:s,x:p.x,y:p.y});
-    if(S.labels && (s.mag<1.4 || (S.fov<45 && s.mag<2.6))){ ctx.fillStyle = sk.label; ctx.globalAlpha = below&&S.ground?0.3:1; ctx.font="500 11px -apple-system,sans-serif"; ctx.fillText(s.name, p.x+r+5, p.y+4); ctx.globalAlpha=1; }
+    if(S.labels && (s.mag<1.4 || (S.fov<45 && s.mag<2.6))){ ctx.fillStyle = sk.label; ctx.globalAlpha = below&&S.ground?0.75:1; ctx.font="500 11px -apple-system,sans-serif"; ctx.fillText(s.name, p.x+r+5, p.y+4); ctx.globalAlpha=1; }
   });
 
   // constellation names
   if(S.lines && S.labels){
     ctx.font = "italic 13px 'Iowan Old Style',Georgia,serif"; ctx.textAlign="center";
-    for(const c of CONSTS){ horiz(c,t,lst); if(S.ground&&c.alt<-3) continue; const p=project(c.v); if(p.z<0.2) continue;
+    for(const c of CONSTS){ horiz(c,t,lst); const p=project(c.v); if(p.z<0.2) continue;
       ctx.fillStyle = sk.label; ctx.globalAlpha=.75; ctx.fillText(c.name.toUpperCase().split("").join(" "), p.x, p.y+22); ctx.globalAlpha=1; screenObjs.push({o:c,x:p.x,y:p.y+18,weak:true}); }
     ctx.textAlign="left";
   }
@@ -137,7 +137,7 @@ function frame(ts){
   // planets, moon, sun
   for(const b of BODIES){ horiz(b,t,lst); const p=project(b.v); if(p.z<0) continue;
     const below=b.alt<0&&S.ground; const r=Math.max(2.2,(2.2-b.mag)*1.1)*zf;
-    ctx.globalAlpha = below?0.3:1;
+    ctx.globalAlpha = below?0.8:1;
     const col = sk.ink? sk.accent : (sk.red?"#ff6a55":b.col);
     if(!sk.ink){ const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*4.5); gr.addColorStop(0,col); gr.addColorStop(.3,col+"44"); gr.addColorStop(1,col+"00"); ctx.fillStyle=gr; ctx.fillRect(p.x-r*5,p.y-r*5,r*10,r*10); }
     ctx.fillStyle=col; ctx.beginPath(); ctx.arc(p.x,p.y,r,0,7); ctx.fill();
@@ -164,7 +164,7 @@ function drawMoon(sk, zf){
   const p = project(MOON.v); if(p.z<0) return;
   const r = 9*zf, below = MOON.alt<0&&S.ground;
   const s = project(SUN.v); let ang = Math.atan2(s.y-p.y, s.x-p.x); if(s.z<-0.9) ang = 0;
-  ctx.save(); ctx.globalAlpha = below?0.35:1; ctx.translate(p.x,p.y);
+  ctx.save(); ctx.globalAlpha = below?0.8:1; ctx.translate(p.x,p.y);
   if(!sk.ink){ const gr=ctx.createRadialGradient(0,0,r,0,0,r*4); gr.addColorStop(0,`rgba(255,250,235,${.25*MOON.illum})`); gr.addColorStop(1,"rgba(255,250,235,0)"); ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(0,0,r*4,0,7); ctx.fill(); }
   ctx.rotate(ang);
   ctx.fillStyle = sk.ink? "rgba(0,0,0,.08)" : "rgba(255,255,255,.08)"; ctx.beginPath(); ctx.arc(0,0,r,0,7); ctx.fill();
@@ -174,12 +174,12 @@ function drawMoon(sk, zf){
   ctx.arc(0,0,r,-Math.PI/2,Math.PI/2,false);           // lit half faces the Sun (+x)
   ctx.ellipse(0,0,Math.abs(k)*r,r,0,Math.PI/2,-Math.PI/2,k>0);
   ctx.fill(); ctx.restore();
-  if(S.labels){ ctx.globalAlpha=below?.35:1; ctx.fillStyle=sk.label; ctx.font="600 12px -apple-system,sans-serif"; ctx.fillText("Moon",p.x+r+6,p.y+4); ctx.globalAlpha=1; }
+  if(S.labels){ ctx.globalAlpha=below?.75:1; ctx.fillStyle=sk.label; ctx.font="600 12px -apple-system,sans-serif"; ctx.fillText("Moon",p.x+r+6,p.y+4); ctx.globalAlpha=1; }
   screenObjs.push({o:MOON,x:p.x,y:p.y});
 }
 function drawSun(sk, zf){
   const p = project(SUN.v); if(p.z<0) return; const r = 11*zf;
-  ctx.save(); ctx.globalAlpha = SUN.alt<0&&S.ground?0.35:1;
+  ctx.save(); ctx.globalAlpha = SUN.alt<0&&S.ground?0.8:1;
   const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*5); gr.addColorStop(0,sk.ink?sk.accent:"#fff7d6"); gr.addColorStop(.2,sk.ink?sk.accent+"66":"rgba(255,226,150,.5)"); gr.addColorStop(1,"rgba(255,220,140,0)");
   ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(p.x,p.y,r*5,0,7); ctx.fill(); ctx.restore();
   screenObjs.push({o:SUN,x:p.x,y:p.y});
@@ -188,7 +188,7 @@ function drawSun(sk, zf){
 function drawGround(sk){
   const P = [0,120,240].map(az=>project(altAzVec(0,az)));
   const nad = dot([0,0,-1],cam.f), np = project([0,0,-1]);
-  ctx.fillStyle = sk.ground; ctx.globalAlpha = sk.ink? .55 : .93;
+  ctx.fillStyle = sk.ground; ctx.globalAlpha = sk.ink? .42 : .66;
   const [a,b,c] = P, d = 2*(a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y));
   ctx.beginPath();
   if(Math.abs(d) < 1e-3 || [a,b,c].some(p=>Math.abs(p.x)>1e6||Math.abs(p.y)>1e6)){
@@ -206,7 +206,7 @@ function drawGround(sk){
   if(inside){ ctx.arc(ux,uy,R,0,7); ctx.fill(); }
   else { ctx.rect(-10,-10,W+20,H+20); ctx.moveTo(ux+R,uy); ctx.arc(ux,uy,R,0,7); ctx.fill("evenodd"); }
   ctx.globalAlpha = 1;
-  ctx.strokeStyle = sk.ink? sk.line : `rgba(255,255,255,${.12+.2*darkness})`; ctx.lineWidth=1.2; ctx.beginPath(); ctx.arc(ux,uy,R,0,7); ctx.stroke();
+  ctx.strokeStyle = sk.ink? sk.accent : `rgba(255,255,255,${.38+.3*darkness})`; ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(ux,uy,R,0,7); ctx.stroke();
 }
 
 function drawCardinals(sk){
@@ -234,7 +234,7 @@ function drawTarget(sk, ts){
     ctx.fillStyle=sk.accent; ctx.font="600 11px -apple-system,sans-serif"; ctx.textAlign="center";
     ctx.fillText(`${o.name} · ${Math.round(ang)}°`, x - Math.cos(a)*30, y - Math.sin(a)*30 + 4); ctx.textAlign="left";
   }
-  if(ang < 4 && !S.found){ S.found = true; tick(1); buzz([18,40,18]); toast(`Found ${o.name}`); }
+  if(ang < 4 && !S.found){ S.found = true; tick(1); buzz([18,40,18]); toast(`Found ${o.name} · tap it to stop`); }
   if(ang > 9) S.found = false;
 }
 
@@ -249,7 +249,7 @@ function updatePointing(alt, az){
   if(best){ S.pointing = best;
     $("pDot").textContent = best.type==="planet"? best.glyph : best.type==="moon"? "☾" : best.type==="sun"?"☀":"✦";
     $("pName").textContent = best.name;
-    $("pSub").textContent = best.type==="star"? `Star in ${CONST[best.con].name} · tap for more` : best.type==="planet"? "Planet · tap for more" : best.type==="moon"? `${moonPhaseName(MOON.elong)} · tap for more` : "Don't look at it directly";
+    $("pSub").textContent = (best.type==="star"? `Star in ${CONST[best.con].name} · tap for more` : best.type==="planet"? "Planet · tap for more" : best.type==="moon"? `${moonPhaseName(MOON.elong)} · tap for more` : "Don't look at it directly") + (best.alt<0? " · below the horizon" : "");
   } else if(con && cd<16){ S.pointing = con; $("pDot").textContent="✧"; $("pName").textContent=con.name; $("pSub").textContent="Constellation · tap for more"; }
   else { S.pointing = null; $("pDot").textContent="·"; $("pName").textContent = alt<-5? "The ground" : "Empty sky"; $("pSub").textContent = alt<-5? "Tilt up to see the sky above you" : "Faint stars only. Keep looking around"; }
   const isNight = darkness>0.6;
@@ -276,8 +276,17 @@ cv.addEventListener("wheel", e=>{ e.preventDefault(); S.fov=Math.max(20,Math.min
   S.az=norm360(S.az-vel.x); S.alt=Math.max(-85,Math.min(89,S.alt+vel.y)); vel.x*=0.93; vel.y*=0.93; })();
 
 function tapAt(x,y){
+  // tapping the thing you're finding (or its ring) stops finding it
+  if(S.target && S.target.v){ const p=project(S.target.v); if(p.z>0 && Math.hypot(p.x-x,p.y-y)<38){ clearTarget(); return; } }
   let best=null, bd=28; for(const so of screenObjs){ const d=Math.hypot(so.x-x,so.y-y)+(so.weak?10:0); if(d<bd){bd=d;best=so.o;} }
   if(best){ tick(0.6); openInfo(best); }
+}
+function clearTarget(){
+  if(!S.target) return; const n=S.target.name; S.target=null; S.found=false; updateChip(); tick(.5); toast(`Stopped finding ${n}`);
+}
+function updateChip(){
+  const c=$("findChip"); if(!c) return;
+  if(S.target){ $("findName").textContent=S.target.name; c.classList.add("show"); } else c.classList.remove("show");
 }
 
 // ---------- motion ----------
@@ -375,7 +384,7 @@ let actx=null;
 function tick(v=.5){ if(!S.sounds) return; try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(), g=actx.createGain();
   o.type="triangle"; o.frequency.value=1800+v*900; g.gain.setValueAtTime(.05*v,actx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.05);
   o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.06); buzz(8); }catch(e){} }
-function buzz(p){ if(S.haptics && navigator.vibrate) navigator.vibrate(p); }
+function buzz(p){ if(!S.haptics) return; if(window.CaelumNative && CaelumNative.vibrate) CaelumNative.vibrate(String(p)); else if(navigator.vibrate) navigator.vibrate(p); }
 let toastT; function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
 
 $("bMotion").onclick = enableMotion;

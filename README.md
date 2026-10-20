@@ -5,15 +5,18 @@
 
 <p align="center"><b>Hold your phone up and the real sky over you lines up behind the glass.</b></p>
 
-Caelum is a free sky map that runs in your phone's browser. Point the phone at any part of the sky and it shows you which stars, planets and constellations are there, even in daylight or through clouds.
+Caelum is a free sky map for your phone. Point it at any part of the sky and it shows you which stars, planets and constellations are there, even in daylight or through clouds. When you've found something, take a night photo of it.
 
 <p align="center">
+  <a href="https://github.com/Szebastian31/caelum/releases/latest">
+    <img src="https://img.shields.io/badge/Download%20APK-Android-3ddc84?style=for-the-badge&logo=android&logoColor=white" alt="Download APK">
+  </a>
   <a href="https://szebastian31.github.io/caelum/">
-    <img src="https://img.shields.io/badge/Open%20Caelum-Launch%20the%20app-3a4f92?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Open Caelum">
+    <img src="https://img.shields.io/badge/Open%20Caelum-Any%20browser-3a4f92?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Open Caelum">
   </a>
 </p>
 
-<p align="center">No download from an app store, no account, no ads.</p>
+<p align="center">No app store, no account, no ads. Get the <b>Android app</b>, or use Caelum in any phone's browser.</p>
 
 <p align="center">
   <img src="screenshots/sky.svg" width="250" alt="Pointing the phone at Orion: the sky view with stars, constellation lines and the compass accuracy badge">
@@ -28,25 +31,30 @@ Caelum is a free sky map that runs in your phone's browser. Point the phone at a
 
 ## Getting started
 
-1. Open **[szebastian31.github.io/caelum](https://szebastian31.github.io/caelum/)** on your phone.
-2. Tap **Start**. On iPhone, tap **Allow** when it asks about motion.
-3. Hold the phone up and look around. The sky moves with you.
+### Android app (recommended)
 
-That's it. The bar at the bottom always tells you what's in the middle of the screen. Tap it to learn more.
+1. Open **[Releases](https://github.com/Szebastian31/caelum/releases/latest)** on your phone and download **Caelum_v….apk**.
+2. Open the file. If Android asks, allow your browser to **install unknown apps**.
+3. Open Caelum, tap **Start** and hold the phone up. The sky moves with you.
+
+The app keeps the screen awake while you stargaze, opens your phone's own camera with all its modes, and saves photos straight to your gallery.
+
+### iPhone or any browser
+
+1. Open **[szebastian31.github.io/caelum](https://szebastian31.github.io/caelum/)**.
+2. Tap **Start**. On iPhone, tap **Allow** when it asks about motion.
+3. To keep it on your home screen: **iPhone (Safari):** tap **Share**, then **Add to Home Screen**. **Android (Chrome):** tap **⋮**, then **Install app**. It then works offline too, handy somewhere dark with no signal.
+
+The bar at the bottom always tells you what's in the middle of the screen. Tap it to learn more.
 
 > **On a computer?** Drag with the mouse to look around and scroll to zoom. The motion part needs a phone.
-
-## Add it to your home screen
-
-Then it opens full screen like a normal app, and it works offline, which is handy somewhere dark with no signal.
-
-- **iPhone (Safari):** tap **Share**, then **Add to Home Screen**.
-- **Android (Chrome):** tap **⋮**, then **Install app** or **Add to home screen**.
 
 ## Things to try
 
 - **🔭 Tap any star or planet** to see what it is, how high it is, when it rises and sets, and how far away it is. For stars, it also tells you roughly when the light you're seeing left them.
-- **🔍 Find something.** Tap the magnifying glass and search for "Jupiter" or "Orion". An arrow leads you there, and the phone gives a little tick when you've found it.
+- **🔍 Find something.** Tap the magnifying glass and search for "Jupiter" or "Orion". An arrow leads you there, and the phone gives a little tick when you've found it. To stop, tap the object again or the **Finding…** chip.
+- **📷 Take a night photo.** Tap the camera button. **Night** mode in Caelum stacks 2, 4 or 8 seconds of frames to pull faint stars out of the noise, so rest the phone on something steady. Or tap **Phone camera**: in the Android app this opens your phone's own camera, where you can switch to its Night mode.
+- **🌍 Below the horizon.** The ground is tinted, not solid, so you can still see the stars under your feet. Point down and Caelum names them.
 - **🕘 Travel through the night.** Drag the time ruler above the bottom bar to fast-forward or rewind, and watch the stars wheel across the sky. Tap **See tonight** during the day to jump to 22:00.
 - **🌙 Check the Tonight tab** for the Moon phase, which planets are easy to see, the brightest stars, and constellations worth spotting.
 - **🎨 Change the look** in **Profile**. There are five styles, including **Atlas**, which looks like an old paper star chart, and **Red night**, which keeps your eyes adjusted to the dark.
@@ -70,7 +78,7 @@ The weak spot is your phone's compass, which is usually off by about 5 to 15°. 
 
 ## Privacy
 
-Everything happens on your phone. Your location and motion data are only used for drawing the sky and are never sent anywhere. Your settings are saved on your device only.
+Everything happens on your phone. Your location, motion data and photos are only used on your device and are never uploaded. Your settings are saved on your device only.
 
 ## Questions or ideas?
 
@@ -78,12 +86,12 @@ Found a bug or have an idea? [Open an issue](https://github.com/Szebastian31/cae
 
 ---
 
-*Caelum is Latin for "sky". It's a sibling to Consensus Weather, Fidelis and Vestis.*
+*Caelum is Latin for "sky". It's a sibling to Consensus Weather, Fidelis, Vestis and Hora.*
 
 <details>
 <summary>For developers</summary>
 
-Plain HTML, CSS and JavaScript, with no build step and no dependencies. It's hosted on GitHub Pages.
+The interface is plain HTML, CSS and JavaScript, hosted on GitHub Pages. The Android app (`app/`) bundles those same files into a native shell that adds the phone's camera app, saving to the gallery and keeping the screen on. GitHub Actions builds the APK on every push.
 
 | File | What it does |
 |---|---|
@@ -92,12 +100,15 @@ Plain HTML, CSS and JavaScript, with no build step and no dependencies. It's hos
 | `astro.js` | Astronomy maths: sidereal time, alt/az, Sun, Moon, planets |
 | `app.js` | Sky rendering, drag/zoom, motion sensors, time ruler |
 | `ui.js` | Tabs, sheets, Tonight, Profile, saved settings |
+| `camera.js` | Night camera (frame stacking) and the phone camera hand-off |
 | `manifest.webmanifest`, `sw.js` | Home-screen install and offline cache |
 | `icons/` | App icons |
+| `app/` | Android app: WebView shell, camera intent, gallery saving |
+| `.github/workflows/build.yml` | Builds the APK and publishes it as a release |
 
 Positions use J2000 coordinates with precession applied, plus low-precision formulas for the Sun, Moon and planets. They're accurate to about 0.3°.
 
-After changing any file, bump `VERSION` in `sw.js` (e.g. `caelum-v3`) so installed copies update.
+After changing any file, bump `VERSION` in `sw.js` so installed web copies update, and `versionName` + `versionCode` in `app/build.gradle` for a new APK release.
 
 </details>
 

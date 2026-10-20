@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Caelum" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/caelum_night</item>
+        <item name="android:statusBarColor">@color/caelum_night</item>
+        <item name="android:navigationBarColor">@color/caelum_night</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">#8FD6FF</item>
+    </style>
+    <color name="caelum_night">#070D26</color>
+</resources>

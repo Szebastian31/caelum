@@ -81,11 +81,11 @@ function openInfo(o){
     <div class="facts">${facts.map(([a,b])=>`<div class="fact"><span>${a}</span><b>${b}</b></div>`).join("")}</div>
     ${story?`<p class="story">${story}</p>`:""}
     <div class="honest">Position calculated for ${fmtDay(simTime())} in ${S.place}, good to about 0.3°. ${accLine()}</div>
-    <div class="acts"><button class="btn" id="aFind">Find it</button><button class="btn ghost" id="aCentre">Centre in view</button></div>`);
-  $("aFind").onclick=()=>{ setTarget(o); closeSheet(); };
+    <div class="acts">${S.target===o? `<button class="btn" id="aFind">Stop finding</button>` : `<button class="btn" id="aFind">Find it</button>`}<button class="btn ghost" id="aCentre">Centre in view</button></div>`);
+  $("aFind").onclick=()=>{ if(S.target===o){ clearTarget(); closeSheet(); return; } setTarget(o); closeSheet(); };
   $("aCentre").onclick=()=>{ if(S.mode==="motion"){ toast("Turn off motion to centre"); return; } const q=nowPos(o); S.az=q.az; S.alt=q.alt; closeSheet(); tick(); };
 }
-function setTarget(o){ S.target=o; S.found=false; showTab("sky"); toast(`Follow the arrow to ${o.name}`); tick(.8); }
+function setTarget(o){ S.target=o; S.found=false; updateChip(); showTab("sky"); toast(`Follow the arrow to ${o.name}`); tick(.8); }
 $("pointing").onclick=()=> S.pointing? openInfo(S.pointing) : toast("Point at a star, planet or constellation");
 
 // ---------- find ----------
@@ -152,7 +152,7 @@ function applySkin(k){
 $("skins").innerHTML = Object.entries(SKINS).map(([k,s])=>`<div class="skin" data-k="${k}"><div class="sw" style="background:linear-gradient(${s.top},${s.bot})"><svg viewBox="0 0 52 52" style="position:absolute;inset:0"><path d="M26 15l1.6 7.4L35 24l-7.4 1.6L26 33l-1.6-7.4L17 24l7.4-1.6z" fill="${s.ink?s.fg:s.red?'#ff4b3a':'#fff'}"/><circle cx="14" cy="13" r="1" fill="${s.ink?s.fg:'#fff'}" opacity=".7"/><circle cx="38" cy="38" r="1.2" fill="${s.accent}"/><rect x="0" y="40" width="52" height="12" fill="${s.ground}" opacity=".9"/></svg></div>${s.name}</div>`).join("");
 document.querySelectorAll(".skin").forEach(s=>s.onclick=()=>{ applySkin(s.dataset.k); tick(.7); });
 
-const TOGS=[["lines","Constellation lines","The stick figures between stars"],["labels","Names","Star, planet and constellation names"],["milky","Milky Way","Drawn along the real galactic plane"],["ground","Solid ground","Off lets you see stars below the horizon"],["sounds","Tactile sounds","Soft ticks on taps, N/E/S/W and finds"],["haptics","Haptics","Vibration on phones that support it"]];
+const TOGS=[["lines","Constellation lines","The stick figures between stars"],["labels","Names","Star, planet and constellation names"],["milky","Milky Way","Drawn along the real galactic plane"],["ground","Ground","Tinted so you can still see stars below the horizon. Off removes it"],["sounds","Tactile sounds","Soft ticks on taps, N/E/S/W and finds"],["haptics","Haptics","Vibration on phones that support it"]];
 $("toggles").innerHTML = TOGS.map(([k,a,b])=>`<div class="tog"><div>${a}<small>${b}</small></div><div class="sw-t ${S[k]?"on":""}" data-k="${k}"></div></div>`).join("");
 document.querySelectorAll(".sw-t").forEach(t=>t.onclick=()=>{ const k=t.dataset.k; S[k]=!S[k]; t.classList.toggle("on",S[k]); if(k==="lines") $("bLines").classList.toggle("on",!S.lines); tick(.5); });
 
