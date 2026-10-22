@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -162,20 +163,48 @@ public class MainActivity extends Activity {
 
     /** Everything the web app can ask Android for, as window.CaelumNative. */
     private class Bridge {
-        /** Opens the phone's full camera app, where Night mode is one swipe away (or already on if you used it last). */
+        /**
+         * Opens the phone's full camera app, exactly as if you'd tapped its icon, so every mode (including Night) is there.
+         * Returns false only if no camera app could be found, so the web app can fall back to its own camera.
+         */
         @JavascriptInterface
-        public void openCamera() {
+        public boolean openCamera() {
+            PackageManager pm = getPackageManager();
+            Intent launch = null;
+
+            // 1. the system camera app's own launcher (Oppo/OnePlus/Realme first, then whatever handles photos)
+            String[] known = {"com.oplus.camera", "com.oppo.camera", "com.android.camera", "com.android.camera2",
+                    "com.google.android.GoogleCamera", "com.sec.android.app.camera", "com.motorola.camera3"};
+            for (String pkg : known) {
+                launch = pm.getLaunchIntentForPackage(pkg);
+                if (launch != null) break;
+            }
+            if (launch == null) {
+                ResolveInfo ri = pm.resolveActivity(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), PackageManager.MATCH_DEFAULT_ONLY);
+                if (ri != null && ri.activityInfo != null && !"android".equals(ri.activityInfo.packageName)) {
+                    launch = pm.getLaunchIntentForPackage(ri.activityInfo.packageName);
+                }
+            }
+            // 2. the standard "open the camera" intents
+            if (launch == null) {
+                Intent still = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+                if (still.resolveActivity(pm) != null) launch = still;
+            }
+            if (launch == null) {
+                Intent cap = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (cap.resolveActivity(pm) != null) launch = cap;
+            }
+            if (launch == null) return false;
+
+            final Intent go = launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             runOnUiThread(() -> {
                 try {
-                    startActivity(new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA));
+                    startActivity(go);
                 } catch (Exception e) {
-                    try {
-                        startActivity(new Intent(MediaStore.ACTION_IMAGE_CAPTURE));
-                    } catch (Exception e2) {
-                        toast("Couldn't find a camera app");
-                    }
+                    toast("Couldn't open the camera app");
                 }
             });
+            return true;
         }
 
         /** Saves a JPEG (base64) to Pictures/Caelum so it shows up in the gallery. */
