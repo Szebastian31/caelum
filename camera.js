@@ -95,7 +95,7 @@ async function savePhoto(){
 
 // the phone's own camera app. Only the Android app can open it fully, with all its modes including Night
 function phoneCamera(){
-  if(native && native.openCamera){ closeCam(); native.openCamera(); return; }
+  if(native && native.openCamera){ if(native.openCamera()){ closeCam(); return; } toast("No camera app found. Using Caelum's camera"); if(!cam.classList.contains("show")) openCam(); return; }
   $("camInput").click();
 }
 $("camInput").onchange = e=>{
@@ -104,7 +104,14 @@ $("camInput").onchange = e=>{
   im.src = URL.createObjectURL(f); e.target.value = "";
 };
 
-$("bCam").onclick = openCam;
+// camera button: tap = the phone's own camera app (Android app), press and hold = Caelum's night camera.
+// In a browser the phone camera can't be opened directly, so tap goes to Caelum's camera there.
+let camHold = null, camHeld = false;
+const bCam = $("bCam");
+bCam.addEventListener("pointerdown", ()=>{ camHeld = false; camHold = setTimeout(()=>{ camHeld = true; buzz(15); openCam(); }, 450); });
+["pointerup","pointerleave","pointercancel"].forEach(ev=>bCam.addEventListener(ev, ()=>clearTimeout(camHold)));
+bCam.addEventListener("contextmenu", e=>e.preventDefault());
+bCam.onclick = ()=>{ if(camHeld) return; tick(.6); if(native && native.openCamera) phoneCamera(); else openCam(); };
 $("camClose").onclick = ()=>{ closeCam(); tick(.4); };
 $("camShoot").onclick = shoot;
 $("camPhone").onclick = phoneCamera;

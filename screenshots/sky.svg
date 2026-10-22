@@ -7,68 +7,77 @@
 </defs>
 <rect width="410" height="864" rx="56" fill="#111"/>
 <g clip-path="url(#scr)">
-<g transform="translate(10 10)">
+<g transform="translate(10 10)" font-family="-apple-system,BlinkMacSystemFont,Helvetica,sans-serif">
   <rect width="390" height="844" fill="url(#sky)"/>
-  <!-- Milky Way -->
-  <ellipse cx="90" cy="300" rx="70" ry="330" transform="rotate(18 90 300)" fill="#bcd0ff" opacity=".10" filter="url(#blur)"/>
-  <!-- faint stars -->
+  <ellipse cx="90" cy="320" rx="70" ry="360" transform="rotate(18 90 320)" fill="#bcd0ff" opacity=".10" filter="url(#blur)"/>
   <g fill="#fff" opacity=".55">
-    <circle cx="40" cy="150" r=".8"/><circle cx="72" cy="214" r=".7"/><circle cx="120" cy="120" r="1"/><circle cx="150" cy="190" r=".7"/><circle cx="260" cy="130" r=".8"/><circle cx="290" cy="300" r=".7"/><circle cx="340" cy="270" r="1"/><circle cx="120" cy="300" r=".8"/><circle cx="60" cy="380" r=".7"/><circle cx="110" cy="440" r=".9"/><circle cx="280" cy="460" r=".7"/><circle cx="330" cy="400" r=".8"/><circle cx="250" cy="250" r=".6"/><circle cx="30" cy="470" r=".7"/><circle cx="360" cy="480" r=".7"/><circle cx="150" cy="500" r=".6"/><circle cx="230" cy="510" r=".8"/><circle cx="90" cy="250" r=".6"/><circle cx="180" cy="100" r=".7"/><circle cx="310" cy="160" r=".6"/>
+    <circle cx="40" cy="150" r=".8"/><circle cx="72" cy="214" r=".7"/><circle cx="120" cy="120" r="1"/><circle cx="150" cy="190" r=".7"/><circle cx="260" cy="130" r=".8"/><circle cx="290" cy="300" r=".7"/><circle cx="330" cy="400" r=".8"/><circle cx="120" cy="300" r=".8"/><circle cx="60" cy="380" r=".7"/><circle cx="110" cy="440" r=".9"/><circle cx="280" cy="460" r=".7"/><circle cx="250" cy="250" r=".6"/><circle cx="30" cy="470" r=".7"/><circle cx="150" cy="500" r=".6"/><circle cx="230" cy="510" r=".8"/><circle cx="90" cy="250" r=".6"/><circle cx="180" cy="100" r=".7"/><circle cx="300" cy="170" r=".6"/>
+    <!-- faint stars below the horizon -->
+    <circle cx="40" cy="600" r=".8"/><circle cx="210" cy="590" r=".7"/><circle cx="270" cy="620" r=".9"/><circle cx="330" cy="595" r=".7"/><circle cx="180" cy="635" r=".6"/><circle cx="60" cy="640" r=".7"/>
   </g>
-  <!-- constellation lines -->
+  <!-- constellation lines (Orion, Taurus, and Canis Major below the horizon) -->
   <g stroke="#a0c3ff" stroke-opacity=".38" stroke-width="1" fill="none">
     <path d="M166 308L219 316M219 316L207 362M207 362L200 368M200 368L192 374M192 374L179 428M179 428L238 417M238 417L207 362M166 308L192 374"/>
     <path d="M197 212L301 245M301 245L312 249M312 249L328 251M328 251L322 237M322 237L312 226M312 226L215 160"/>
+    <path d="M84 477L58 492M84 477L104 586M104 586L92 626M104 586L132 612"/>
   </g>
-  <!-- bright stars -->
   <g filter="url(#glow)" opacity=".8"><circle cx="166" cy="308" r="6" fill="#ffb08a"/><circle cx="238" cy="417" r="6" fill="#cfe0ff"/><circle cx="301" cy="245" r="5" fill="#ffd2a0"/><circle cx="84" cy="477" r="7" fill="#fff"/></g>
   <g>
     <circle cx="166" cy="308" r="3.4" fill="#ffb08a"/><circle cx="219" cy="316" r="2.4" fill="#cfe0ff"/><circle cx="207" cy="362" r="2" fill="#cfe0ff"/><circle cx="200" cy="368" r="2.3" fill="#cfe0ff"/><circle cx="192" cy="374" r="2.3" fill="#cfe0ff"/><circle cx="179" cy="428" r="2.1" fill="#cfe0ff"/><circle cx="238" cy="417" r="3.5" fill="#cfe0ff"/>
     <circle cx="301" cy="245" r="3.2" fill="#ffd2a0"/><circle cx="312" cy="226" r="1.2" fill="#ffd2a0"/><circle cx="312" cy="249" r="1.3" fill="#fff"/><circle cx="328" cy="251" r="1.1" fill="#ffd2a0"/><circle cx="322" cy="237" r="1.1" fill="#ffd2a0"/><circle cx="215" cy="160" r="2.4" fill="#cfe0ff"/><circle cx="197" cy="212" r="1.4" fill="#cfe0ff"/>
-    <circle cx="84" cy="477" r="4" fill="#fff"/>
-    <g fill="#cfe0ff"><circle cx="370" cy="190" r="1.4"/><circle cx="375" cy="194" r="1"/><circle cx="366" cy="195" r="1"/><circle cx="372" cy="186" r=".9"/><circle cx="378" cy="189" r=".8"/></g>
+    <circle cx="84" cy="477" r="4" fill="#fff"/><circle cx="58" cy="492" r="1.8" fill="#cfe0ff"/>
+    <circle cx="104" cy="586" r="2.2" fill="#fff1c9"/><circle cx="92" cy="626" r="2.4" fill="#cfe0ff"/><circle cx="132" cy="612" r="1.8" fill="#cfe0ff"/>
   </g>
-  <!-- labels -->
-  <g font-family="-apple-system,BlinkMacSystemFont,Helvetica,sans-serif" font-size="11" font-weight="500" fill="#dce8ff" fill-opacity=".75">
-    <text x="174" y="306">Betelgeuse</text><text x="246" y="421">Rigel</text><text x="309" y="243">Aldebaran</text><text x="92" y="481">Sirius</text><text x="223" y="164">Elnath</text><text x="318" y="208">Pleiades</text>
+  <!-- Finding ring around Betelgeuse -->
+  <circle cx="166" cy="308" r="20" fill="none" stroke="#8fd6ff" stroke-width="2"/>
+  <circle cx="166" cy="308" r="29" fill="none" stroke="#8fd6ff" stroke-width="2" stroke-opacity=".35"/>
+  <g font-size="11" font-weight="500" fill="#dce8ff" fill-opacity=".75">
+    <text x="196" y="300">Betelgeuse</text><text x="246" y="421">Rigel</text><text x="309" y="263">Aldebaran</text><text x="92" y="481">Sirius</text><text x="223" y="164">Elnath</text>
+    <text x="112" y="590">Wezen</text><text x="100" y="630">Adhara</text>
   </g>
-  <g font-family="Georgia,serif" font-style="italic" font-size="13" fill="#dce8ff" fill-opacity=".6" text-anchor="middle"><text x="206" y="466">O R I O N</text><text x="282" y="282">T A U R U S</text></g>
-  <!-- ground -->
-  <path d="M-10 548 Q195 520 400 548 L400 860 L-10 860Z" fill="#070b18" fill-opacity=".94"/>
-  <path d="M-10 548 Q195 520 400 548" stroke="#fff" stroke-opacity=".28" stroke-width="1.2" fill="none"/>
-  <g font-family="-apple-system,Helvetica,sans-serif" text-anchor="middle"><text x="40" y="562" font-size="15" font-weight="600" fill="#8fd6ff">E</text><text x="195" y="552" font-size="11" fill="#dce8ff" fill-opacity=".7">SE</text><text x="350" y="562" font-size="15" font-weight="600" fill="#8fd6ff">S</text></g>
+  <g font-family="Georgia,serif" font-style="italic" font-size="13" fill="#dce8ff" fill-opacity=".6" text-anchor="middle"><text x="206" y="466">O R I O N</text><text x="270" y="290">T A U R U S</text></g>
+  <!-- tinted ground: you can still see through it -->
+  <path d="M-10 548 Q195 520 400 548 L400 860 L-10 860Z" fill="#070b18" fill-opacity=".66"/>
+  <path d="M-10 548 Q195 520 400 548" stroke="#fff" stroke-opacity=".62" stroke-width="1.6" fill="none"/>
+  <g text-anchor="middle"><text x="40" y="562" font-size="15" font-weight="600" fill="#8fd6ff">E</text><text x="195" y="552" font-size="11" fill="#dce8ff" fill-opacity=".7">SE</text><text x="350" y="562" font-size="15" font-weight="600" fill="#8fd6ff">S</text></g>
   <!-- top -->
   <text x="16" y="76" font-family="Georgia,serif" font-size="24" fill="#eef3ff">Gliwice</text>
-  <text x="16" y="96" font-family="-apple-system,Helvetica,sans-serif" font-size="12" fill="#eef3ff" fill-opacity=".62">02:30 · Night</text>
+  <text x="16" y="96" font-size="12" fill="#eef3ff" fill-opacity=".62">02:30 · Night</text>
   <rect x="262" y="56" width="112" height="26" rx="13" fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"/>
   <circle cx="276" cy="69" r="3.5" fill="#5fe3a1"/>
-  <text x="286" y="73" font-family="-apple-system,Helvetica,sans-serif" font-size="11.5" fill="#eef3ff">Compass ±6°</text>
-  <!-- rail -->
-  <g fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"><circle cx="354" cy="154" r="22"/><circle cx="354" cy="208" r="22"/><circle cx="354" cy="262" r="22"/><circle cx="354" cy="316" r="22"/></g>
-  <circle cx="354" cy="208" r="22" fill="#eef3ff"/>
+  <text x="286" y="73" font-size="11.5" fill="#eef3ff">Compass ±6°</text>
+  <!-- rail: find, motion (on), lines, play, camera -->
+  <g fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"><circle cx="354" cy="134" r="22"/><circle cx="354" cy="242" r="22"/><circle cx="354" cy="296" r="22"/><circle cx="354" cy="350" r="22"/></g>
+  <circle cx="354" cy="188" r="22" fill="#eef3ff"/>
   <g stroke="#eef3ff" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="353" cy="153" r="6.5"/><path d="M362 162l-4.2-4.2"/>
-    <path d="M347 260l3.7-5.5M353 253l5-1.8M352 255l3.2 6"/><circle cx="346" cy="261" r="1.5"/><circle cx="352" cy="253" r="1.5"/><circle cx="359" cy="251" r="1.5"/><circle cx="357" cy="262" r="1.5"/>
-    <path d="M350 309l11 7-11 7z"/>
+    <circle cx="353" cy="133" r="6.5"/><path d="M362 142l-4.2-4.2"/>
+    <path d="M347 240l3.7-5.5M353 233l5-1.8M352 235l3.2 6"/><circle cx="346" cy="241" r="1.5"/><circle cx="352" cy="233" r="1.5"/><circle cx="359" cy="231" r="1.5"/><circle cx="357" cy="242" r="1.5"/>
+    <path d="M350 289l11 7-11 7z"/>
+    <path d="M346 346.5h3l1.6-2.5h6.8l1.6 2.5h3v10h-16z"/><circle cx="354" cy="351.2" r="3.4"/>
   </g>
-  <g stroke="#070d26" stroke-width="1.7" fill="none" stroke-linecap="round"><rect x="349" y="199" width="10" height="18" rx="2.5"/><path d="M344 205c-1 2-1 4 0 6M364 205c1 2 1 4 0 6"/></g>
+  <path d="M360.6 341.2l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" fill="#eef3ff"/>
+  <g stroke="#070d26" stroke-width="1.7" fill="none" stroke-linecap="round"><rect x="349" y="179" width="10" height="18" rx="2.5"/><path d="M344 185c-1 2-1 4 0 6M364 185c1 2 1 4 0 6"/></g>
+  <!-- Finding chip -->
+  <rect x="120" y="622" width="150" height="32" rx="16" fill="#8fd6ff"/>
+  <text x="136" y="642" font-size="12.5" fill="#070d26">Finding <tspan font-weight="700">Betelgeuse</tspan></text>
+  <circle cx="254" cy="638" r="11" fill="#000" fill-opacity=".14"/>
+  <text x="254" y="642" text-anchor="middle" font-size="11" font-weight="700" fill="#070d26">✕</text>
   <!-- time -->
-  <text x="195" y="660" text-anchor="middle" font-family="-apple-system,Helvetica,sans-serif" font-size="12" fill="#eef3ff" fill-opacity=".62"><tspan fill="#eef3ff" fill-opacity="1" font-weight="600">Now</tspan>  drag to move through the night</text>
-  <rect x="45" y="668" width="300" height="30" rx="15" fill="#fff" fill-opacity=".07"/>
-  <g fill="#eef3ff" fill-opacity=".45"><rect x="75" y="678" width="1" height="5"/><rect x="95" y="673" width="1" height="9"/><rect x="115" y="678" width="1" height="5"/><rect x="135" y="678" width="1" height="5"/><rect x="155" y="678" width="1" height="5"/><rect x="175" y="673" width="1" height="9"/><rect x="215" y="678" width="1" height="5"/><rect x="235" y="678" width="1" height="5"/><rect x="255" y="673" width="1" height="9"/><rect x="275" y="678" width="1" height="5"/><rect x="295" y="678" width="1" height="5"/><rect x="315" y="678" width="1" height="5"/></g>
-  <g font-family="-apple-system,Helvetica,sans-serif" font-size="9" fill="#eef3ff" fill-opacity=".7" text-anchor="middle"><text x="95" y="693">00</text><text x="255" y="693">03</text></g>
-  <rect x="194" y="671" width="2" height="24" rx="1" fill="#8fd6ff"/>
+  <text x="195" y="672" text-anchor="middle" font-size="12" fill="#eef3ff" fill-opacity=".62"><tspan fill="#eef3ff" fill-opacity="1" font-weight="600">Now</tspan>  drag to move through the night</text>
+  <rect x="45" y="678" width="300" height="22" rx="11" fill="#fff" fill-opacity=".07"/>
+  <g fill="#eef3ff" fill-opacity=".45"><rect x="75" y="687" width="1" height="5"/><rect x="95" y="683" width="1" height="9"/><rect x="115" y="687" width="1" height="5"/><rect x="135" y="687" width="1" height="5"/><rect x="155" y="687" width="1" height="5"/><rect x="175" y="683" width="1" height="9"/><rect x="215" y="687" width="1" height="5"/><rect x="235" y="687" width="1" height="5"/><rect x="255" y="683" width="1" height="9"/><rect x="275" y="687" width="1" height="5"/><rect x="295" y="687" width="1" height="5"/><rect x="315" y="687" width="1" height="5"/></g>
+  <rect x="194" y="681" width="2" height="16" rx="1" fill="#8fd6ff"/>
   <!-- pointing bar -->
-  <rect x="12" y="702" width="366" height="52" rx="18" fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"/>
-  <circle cx="41" cy="728" r="15" fill="#fff" fill-opacity=".08"/><text x="41" y="733" text-anchor="middle" font-size="14" fill="#eef3ff">✧</text>
-  <text x="66" y="724" font-family="-apple-system,Helvetica,sans-serif" font-size="14" font-weight="600" fill="#eef3ff">Orion</text>
-  <text x="66" y="741" font-family="-apple-system,Helvetica,sans-serif" font-size="11.5" fill="#eef3ff" fill-opacity=".62">Constellation · tap for more</text>
-  <text x="364" y="724" text-anchor="end" font-family="Menlo,monospace" font-size="12" fill="#eef3ff" fill-opacity=".62">SE 148°</text>
-  <text x="364" y="740" text-anchor="end" font-family="Menlo,monospace" font-size="12" fill="#eef3ff" fill-opacity=".62">▲ 31°</text>
+  <rect x="12" y="704" width="366" height="50" rx="18" fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".18"/>
+  <circle cx="41" cy="729" r="15" fill="#fff" fill-opacity=".08"/><text x="41" y="734" text-anchor="middle" font-size="14" fill="#eef3ff">✦</text>
+  <text x="66" y="725" font-size="14" font-weight="600" fill="#eef3ff">Betelgeuse</text>
+  <text x="66" y="742" font-size="11.5" fill="#eef3ff" fill-opacity=".62">Star in Orion · tap for more</text>
+  <text x="364" y="725" text-anchor="end" font-family="Menlo,monospace" font-size="12" fill="#eef3ff" fill-opacity=".62">SE 141°</text>
+  <text x="364" y="741" text-anchor="end" font-family="Menlo,monospace" font-size="12" fill="#eef3ff" fill-opacity=".62">▲ 38°</text>
   <!-- tabs -->
   <rect x="0" y="760" width="390" height="84" fill="#070d26" fill-opacity=".72"/>
   <line x1="0" y1="760" x2="390" y2="760" stroke="#fff" stroke-opacity=".15"/>
-  <g font-family="-apple-system,Helvetica,sans-serif" font-size="10.5" text-anchor="middle"><text x="75" y="808" fill="#eef3ff">Sky</text><text x="195" y="808" fill="#eef3ff" fill-opacity=".62">Tonight</text><text x="315" y="808" fill="#eef3ff" fill-opacity=".62">Profile</text></g>
+  <g font-size="10.5" text-anchor="middle"><text x="75" y="808" fill="#eef3ff">Sky</text><text x="195" y="808" fill="#eef3ff" fill-opacity=".62">Tonight</text><text x="315" y="808" fill="#eef3ff" fill-opacity=".62">Profile</text></g>
   <g stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path d="M75 775l1.9 5.6 5.6 1.4-5.6 1.6L75 789l-1.9-5.4-5.6-1.6 5.6-1.4zM67 792h16" stroke="#eef3ff"/>
     <path d="M203 786.5A8 8 0 1 1 192.5 776a6.5 6.5 0 0 0 10.5 10.5z" stroke="#eef3ff" stroke-opacity=".62"/>

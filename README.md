@@ -19,13 +19,15 @@ Caelum is a free sky map for your phone. Point it at any part of the sky and it 
 <p align="center">No app store, no account, no ads. Get the <b>Android app</b>, or use Caelum in any phone's browser.</p>
 
 <p align="center">
-  <img src="screenshots/sky.svg" width="250" alt="Pointing the phone at Orion: the sky view with stars, constellation lines and the compass accuracy badge">
+  <img src="screenshots/sky.svg" width="200" alt="Finding Betelgeuse in Orion: the sky view with constellation lines, a tinted see-through ground and the compass accuracy badge">
   &nbsp;
-  <img src="screenshots/tonight.svg" width="250" alt="The Tonight tab: Moon phase, planets and easy constellations for 22:00">
+  <img src="screenshots/tonight.svg" width="200" alt="The Tonight tab: Moon phase, planets and easy constellations for 22:00">
   &nbsp;
-  <img src="screenshots/atlas.svg" width="250" alt="Tapping Betelgeuse in the Atlas style: height, direction, distance and when its light left">
+  <img src="screenshots/atlas.svg" width="200" alt="Tapping Betelgeuse in the Atlas style: height, direction, distance and when its light left">
+  &nbsp;
+  <img src="screenshots/camera.svg" width="200" alt="Caelum's night camera stacking a photo of Orion over a treeline">
 </p>
-<p align="center"><sub>Point at the sky · See what's up tonight · Tap any star (shown in the Atlas style)</sub></p>
+<p align="center"><sub>Find anything in the sky · See what's up tonight · Tap any star (Atlas style) · Take a night photo</sub></p>
 
 ---
 <p align="center">☕️ You can support me and Buy me a coffee ☕️</p>
@@ -57,7 +59,8 @@ The bar at the bottom always tells you what's in the middle of the screen. Tap i
 
 - **🔭 Tap any star or planet** to see what it is, how high it is, when it rises and sets, and how far away it is. For stars, it also tells you roughly when the light you're seeing left them.
 - **🔍 Find something.** Tap the magnifying glass and search for "Jupiter" or "Orion". An arrow leads you there, and the phone gives a little tick when you've found it. To stop, tap the object again or the **Finding…** chip.
-- **📷 Take a night photo.** Tap the camera button. **Night** mode in Caelum stacks 2, 4 or 8 seconds of frames to pull faint stars out of the noise, so rest the phone on something steady. Or tap **Phone camera**: in the Android app this opens your phone's own camera, where you can switch to its Night mode.
+- **📷 Take a night photo.** In the Android app, tap the camera button to open your phone's own camera, then switch it to Night mode. **Press and hold** the button for Caelum's night camera instead: it stacks 2, 4 or 8 seconds of frames to pull faint stars out of the noise, so rest the phone on something steady. In a browser, a tap opens Caelum's night camera.
+- **▶️ See it move.** The play button sweeps slowly around the whole sky, even while motion is on. Tap it again or touch the screen to stop.
 - **🌍 Below the horizon.** The ground is tinted, not solid, so you can still see the stars under your feet. Point down and Caelum names them.
 - **🕘 Travel through the night.** Drag the time ruler above the bottom bar to fast-forward or rewind, and watch the stars wheel across the sky. Tap **See tonight** during the day to jump to 22:00.
 - **🌙 Check the Tonight tab** for the Moon phase, which planets are easy to see, the brightest stars, and constellations worth spotting.

@@ -13,6 +13,13 @@
 
     <!-- lets Caelum find the phone's camera app on Android 11+ -->
     <queries>
+        <package android:name="com.oplus.camera" />
+        <package android:name="com.oppo.camera" />
+        <package android:name="com.android.camera" />
+        <package android:name="com.android.camera2" />
+        <package android:name="com.google.android.GoogleCamera" />
+        <package android:name="com.sec.android.app.camera" />
+        <package android:name="com.motorola.camera3" />
         <intent>
             <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
         </intent>

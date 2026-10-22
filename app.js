@@ -79,7 +79,7 @@ function frame(ts){
   if(!W) return;
   const sk = SKINS[S.skin];
   if(S.demo) runDemo(ts);
-  if(S.mode==="motion" && gyro) cam = gyro; else cam = camFromAltAz(S.alt,S.az);
+  if(S.mode==="motion" && gyro && !S.demo) cam = gyro; else cam = camFromAltAz(S.alt,S.az);
   const t = simTime(), lst = lstDeg(t,S.lon);
   updateBodies(t);
   horiz(SUN,t,lst); horiz(MOON,t,lst);
@@ -338,7 +338,7 @@ function updateBadge(){
 // demo sweep: what it feels like to move the phone around
 function runDemo(ts){
   const d=S.demo; if(!d.t0) d.t0=ts; const p=(ts-d.t0)/9000;
-  if(p>=1){ S.demo=null; toast("On your phone, this follows your hand"); return; }
+  if(p>=1){ S.demo=null; toast(S.mode==="motion"? "Back to following your phone" : "On your phone, this follows your hand"); return; }
   const e = p<.5? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
   S.az = norm360(d.az + e*300 + Math.sin(p*20)*1.2); S.alt = d.alt + Math.sin(p*Math.PI*2)*22 + Math.sin(p*31)*0.8;
 }
@@ -389,7 +389,7 @@ let toastT; function toast(m){ const t=$("toast"); t.textContent=m; t.classList.
 
 $("bMotion").onclick = enableMotion;
 $("bLines").onclick = ()=>{ S.lines=!S.lines; $("bLines").classList.toggle("on",!S.lines); tick(); toast(S.lines?"Constellations on":"Constellations off"); };
-$("bDemo").onclick = ()=>{ if(S.mode==="motion") return; S.demo={az:S.az,alt:S.alt}; tick(); };
+$("bDemo").onclick = ()=>{ if(S.demo){ S.demo=null; tick(.4); return; } const [al,az]=camAltAz(cam); S.alt=Math.max(-20,Math.min(60,al)); S.az=az; S.demo={az:S.az,alt:S.alt}; tick(); };
 
 // ---------- start in motion mode on phones ----------
 const isPhone = matchMedia("(pointer:coarse)").matches && typeof DeviceOrientationEvent!=="undefined";
