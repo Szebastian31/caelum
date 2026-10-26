@@ -94,7 +94,7 @@ function findList(q=""){
   const items=[...BODIES, MOON, ...CONSTS, ...STARS.filter(s=>s.mag<2.6)];
   const rows = items.filter(o=>!q||o.name.toLowerCase().includes(q)).slice(0,40).map(o=>{
     const p=nowPos(o); const up=p.alt>=0;
-    const ic = o.type==="planet"?o.glyph: o.type==="moon"?"☾": o.type==="const"?"✧":"✦";
+    const ic = o.type==="planet"? planetIcon(o.id): o.type==="moon"?"☾": o.type==="const"?"✧":"✦";
     const sub = o.type==="star"? `Star · ${CONST[o.con].name}` : o.type==="const"? "Constellation" : o.type==="moon"? moonPhaseName(MOON.elong) : "Planet";
     return `<div class="row" data-id="${o.id}"><div class="ic" style="background:rgba(255,255,255,.07)">${ic}</div><div class="tx"><b>${o.name}</b><span>${sub}</span></div><div class="rt">${up?`<span class="pill">Up · ${Math.round(p.alt)}°</span>`:`<span class="pill dim">Below</span>`}</div></div>`;
   }).join("");
@@ -125,7 +125,7 @@ function buildTonight(){
     const rs=riseSet(raDecFn(b), new Date(t.getTime()-6*3600000), S.lat, S.lon);
     const sub = alt>5? `${Math.round(alt)}° up in the ${compass(az)}` : alt>0? `Very low in the ${compass(az)}` : rs.rise? `Rises ${fmtTime(rs.rise)}` : "Not up tonight";
     const pill = alt>10? `<span class="pill">Easy</span>` : alt>0? `<span class="pill amber">Low</span>` : `<span class="pill dim">Below</span>`;
-    return `<div class="row" data-id="${b.id}"><div class="ic" style="background:${b.col}22;color:${b.col}">${b.glyph}</div><div class="tx"><b>${b.name}</b><span>${sub} · mag ${p.mag.toFixed(1)}</span></div><div class="rt">${pill}</div></div>`;
+    return `<div class="row" data-id="${b.id}"><div class="ic" style="background:${b.col}26">${planetIcon(b.id)}</div><div class="tx"><b>${b.name}</b><span>${sub} · mag ${p.mag.toFixed(1)}</span></div><div class="rt">${pill}</div></div>`;
   }).join("");
   const up = STARS.map(s=>({s,alt:toHorizon(s.ra,s.dec,lst,S.lat)})).filter(x=>x.alt[0]>15).sort((a,b)=>a.s.mag-b.s.mag).slice(0,5);
   $("starList").innerHTML = up.map(({s,alt})=>`<div class="row" data-id="${s.id}"><div class="ic" style="background:rgba(255,255,255,.07)">✦</div><div class="tx"><b>${s.name}</b><span>${CONST[s.con].name} · ${Math.round(alt[0])}° up in the ${compass(alt[1])}</span></div><div class="rt">mag ${s.mag.toFixed(1)}</div></div>`).join("");
@@ -146,8 +146,10 @@ function applySkin(k){
   S.skin=k; const sk=SKINS[k], sc=$("screen");
   sc.style.setProperty("--sky-top",sk.top); sc.style.setProperty("--sky-bot",sk.bot); sc.style.setProperty("--fg",sk.fg); sc.style.setProperty("--accent",sk.accent);
   sc.style.setProperty("--fg2", sk.light? "rgba(30,25,15,.58)" : sk.red? "rgba(255,90,72,.6)" : "rgba(238,243,255,.62)");
-  sc.classList.toggle("light",!!sk.light);
+  sc.classList.toggle("light",!!sk.light); sc.classList.toggle("redskin",!!sk.red);
   document.querySelectorAll(".skin").forEach(s=>s.classList.toggle("on",s.dataset.k===k));
+  // dark status and navigation bar icons on the light skins (Android app)
+  try{ if(window.CaelumNative && CaelumNative.setBars) CaelumNative.setBars(!!sk.light); }catch(e){}
 }
 $("skins").innerHTML = Object.entries(SKINS).map(([k,s])=>`<div class="skin" data-k="${k}"><div class="sw" style="background:linear-gradient(${s.top},${s.bot})"><svg viewBox="0 0 52 52" style="position:absolute;inset:0"><path d="M26 15l1.6 7.4L35 24l-7.4 1.6L26 33l-1.6-7.4L17 24l7.4-1.6z" fill="${s.ink?s.fg:s.red?'#ff4b3a':'#fff'}"/><circle cx="14" cy="13" r="1" fill="${s.ink?s.fg:'#fff'}" opacity=".7"/><circle cx="38" cy="38" r="1.2" fill="${s.accent}"/><rect x="0" y="40" width="52" height="12" fill="${s.ground}" opacity=".9"/></svg></div>${s.name}</div>`).join("");
 document.querySelectorAll(".skin").forEach(s=>s.onclick=()=>{ applySkin(s.dataset.k); tick(.7); });

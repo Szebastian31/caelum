@@ -31,7 +31,7 @@ const MOON = {id:"moon",type:"moon",name:"Moon"}, SUN = {id:"sun",type:"sun",nam
 const CONSTS = Object.entries(CONST).filter(([k,c])=>c.lines).map(([k,c])=>({id:"c_"+k,key:k,type:"const",name:c.name}));
 
 let lastKey = "";
-function simTime(){ return new Date(Date.now() + S.offsetMin*60000); }
+function simTime(){ return new Date((window.DEMO_NOW || Date.now()) + S.offsetMin*60000); }
 function updateBodies(t){
   const key = Math.floor(t.getTime()/60000); if(key===lastKey) return; lastKey = key;
   for(const b of BODIES){ Object.assign(b, planetPos(b.id, t)); }
@@ -59,7 +59,7 @@ function camAltAz(c){ const f=c.f; return [Math.asin(Math.max(-1,Math.min(1,f[2]
 // ---------- canvas ----------
 const cv = $("sky"), ctx = cv.getContext("2d");
 let W=0,H=0,DPR=1;
-function resize(){ const r = cv.getBoundingClientRect(); DPR = Math.min(2,devicePixelRatio||1); W=r.width; H=r.height; cv.width=W*DPR; cv.height=H*DPR; }
+function resize(){ const r = cv.getBoundingClientRect(); DPR = window.DEMO ? 3 : Math.min(2,devicePixelRatio||1); W=r.width; H=r.height; cv.width=W*DPR; cv.height=H*DPR; }
 new ResizeObserver(resize).observe(cv);
 
 function scale(){ return (W/2)/(2*Math.tan(S.fov*D2R/4)); }
@@ -247,7 +247,7 @@ function updatePointing(alt, az){
   let con=null, cd=1e9; for(const c of CONSTS){ if(!c.v) continue; const d=Math.acos(Math.max(-1,Math.min(1,dot(c.v,cam.f))))*R2D; if(d<cd){cd=d;con=c;} }
   $("pDir").innerHTML = `${compass(az)} ${Math.round(az)}°<br>${alt>=0?"▲":"▼"} ${Math.abs(Math.round(alt))}°`;
   if(best){ S.pointing = best;
-    $("pDot").textContent = best.type==="planet"? best.glyph : best.type==="moon"? "☾" : best.type==="sun"?"☀":"✦";
+    $("pDot").innerHTML = best.type==="planet"? planetIcon(best.id,20) : best.type==="moon"? "☾" : best.type==="sun"?"☀&#xFE0E;":"✦";
     $("pName").textContent = best.name;
     $("pSub").textContent = (best.type==="star"? `Star in ${CONST[best.con].name} · tap for more` : best.type==="planet"? "Planet · tap for more" : best.type==="moon"? `${moonPhaseName(MOON.elong)} · tap for more` : "Don't look at it directly") + (best.alt<0? " · below the horizon" : "");
   } else if(con && cd<16){ S.pointing = con; $("pDot").textContent="✧"; $("pName").textContent=con.name; $("pSub").textContent="Constellation · tap for more"; }
@@ -385,7 +385,7 @@ function tick(v=.5){ if(!S.sounds) return; try{ actx = actx || new (window.Audio
   o.type="triangle"; o.frequency.value=1800+v*900; g.gain.setValueAtTime(.05*v,actx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.05);
   o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.06); buzz(8); }catch(e){} }
 function buzz(p){ if(!S.haptics) return; if(window.CaelumNative && CaelumNative.vibrate) CaelumNative.vibrate(String(p)); else if(navigator.vibrate) navigator.vibrate(p); }
-let toastT; function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
+let toastT; function toast(m){ if(window.DEMO) return; const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
 
 $("bMotion").onclick = enableMotion;
 $("bLines").onclick = ()=>{ S.lines=!S.lines; $("bLines").classList.toggle("on",!S.lines); tick(); toast(S.lines?"Constellations on":"Constellations off"); };

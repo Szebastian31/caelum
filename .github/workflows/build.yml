@@ -29,12 +29,12 @@ jobs:
       - name: Install SDK packages
         run: |
           yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
+          gradle-version: '8.13'
 
       # the version, release name and APK file name all come from versionName in app/build.gradle
       - name: Read version
@@ -78,4 +78,4 @@ jobs:
           make_latest: true
           body: |
             Download **Caelum_v${{ steps.ver.outputs.name }}.apk** below and open it on your phone to install.
-            The camera button opens your phone's own camera app (with its Night mode). Press and hold it for Caelum's night camera, which saves photos to Pictures/Caelum.
+            Targets Android 16. The camera button opens your phone's own camera app (with its Night mode); press and hold it for Caelum's night camera, which saves photos to Pictures/Caelum. Your version is shown at the bottom of Profile.

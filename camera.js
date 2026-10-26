@@ -93,11 +93,13 @@ async function savePhoto(){
   const a = document.createElement("a"); a.href = data; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Photo downloaded");
 }
 
-// the phone's own camera app. Only the Android app can open it fully, with all its modes including Night
+// the phone's own camera app. Only the Android app can open it fully, with all its modes including Night.
+// Android tries several ways to open it and calls caelumCameraFailed() if none of them worked.
 function phoneCamera(){
-  if(native && native.openCamera){ if(native.openCamera()){ closeCam(); return; } toast("No camera app found. Using Caelum's camera"); if(!cam.classList.contains("show")) openCam(); return; }
+  if(native && native.openCamera){ closeCam(); try{ native.openCamera(); }catch(e){ caelumCameraFailed(); } return; }
   $("camInput").click();
 }
+window.caelumCameraFailed = ()=>{ toast("Couldn't open your camera app. Using Caelum's camera"); if(!cam.classList.contains("show")) openCam(); };
 $("camInput").onchange = e=>{
   const f = e.target.files && e.target.files[0]; if(!f) return;
   const im = new Image(); im.onload = ()=>{ out.width=im.naturalWidth; out.height=im.naturalHeight; out.getContext("2d").drawImage(im,0,0); URL.revokeObjectURL(im.src); showResult("Photo from your camera"); };
@@ -106,12 +108,15 @@ $("camInput").onchange = e=>{
 
 // camera button: tap = the phone's own camera app (Android app), press and hold = Caelum's night camera.
 // In a browser the phone camera can't be opened directly, so tap goes to Caelum's camera there.
-let camHold = null, camHeld = false;
+let camHold = null, camHeld = false, camDown = 0;
 const bCam = $("bCam");
-bCam.addEventListener("pointerdown", ()=>{ camHeld = false; camHold = setTimeout(()=>{ camHeld = true; buzz(15); openCam(); }, 450); });
-["pointerup","pointerleave","pointercancel"].forEach(ev=>bCam.addEventListener(ev, ()=>clearTimeout(camHold)));
+bCam.addEventListener("pointerdown", ()=>{ camHeld = false; camDown = Date.now(); clearTimeout(camHold); camHold = setTimeout(()=>{ camHeld = true; buzz(15); openCam(); }, 500); });
+["pointerleave","pointercancel"].forEach(ev=>bCam.addEventListener(ev, ()=>clearTimeout(camHold)));
+// act on the finger lifting rather than "click", which some WebViews drop after a pointerdown timer
+bCam.addEventListener("pointerup", e=>{ clearTimeout(camHold); if(camHeld || Date.now()-camDown > 500) return; e.preventDefault(); tapCam(); });
 bCam.addEventListener("contextmenu", e=>e.preventDefault());
-bCam.onclick = ()=>{ if(camHeld) return; tick(.6); if(native && native.openCamera) phoneCamera(); else openCam(); };
+bCam.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" ") tapCam(); });
+function tapCam(){ tick(.6); if(native && native.openCamera) phoneCamera(); else openCam(); }
 $("camClose").onclick = ()=>{ closeCam(); tick(.4); };
 $("camShoot").onclick = shoot;
 $("camPhone").onclick = phoneCamera;

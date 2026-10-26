@@ -1,6 +1,6 @@
 // Caelum offline cache. Bump VERSION whenever you change a file so phones pick up the update.
-const VERSION = "caelum-v4";
-const FILES = ["./","index.html","data.js","astro.js","app.js","ui.js","camera.js","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
+const VERSION = "caelum-v7";
+const FILES = ["./","index.html","data.js","astro.js","app.js","ui.js","camera.js","demo.js","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => Promise.all(FILES.map(f => c.add(f).catch(()=>{})))).then(() => self.skipWaiting()));
