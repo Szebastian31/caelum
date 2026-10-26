@@ -24,7 +24,7 @@ const SCENES = {
   $("start").classList.remove("show");
   S.offsetMin = 0; S.place = "Gliwice"; S.lat = 50.294; S.lon = 18.665;
   applySkin(skin);
-  $("verLine").textContent = "Caelum 1.1.0 · Android app";
+  $("verLine").textContent = "Caelum 1.1.1 · Android app";
 
   // a phone status bar and gesture bar, so the pictures look like real screenshots
   document.documentElement.style.setProperty("--sat","44px");

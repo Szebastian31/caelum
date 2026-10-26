@@ -1,13 +1,13 @@
 // Caelum: night camera. Stacks frames for a few seconds to pull faint stars out of the noise,
 // and can hand over to the phone's own camera app (with its Night mode) instead.
-const cam = $("cam"), vid = $("camVideo"), out = $("camOut");
+const camEl = $("cam"), vid = $("camVideo"), out = $("camOut");
 let stream = null, shooting = false, camSecs = 4;
 const native = window.CaelumNative || null;
 
 async function openCam(){
   closeSheet();
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.isSecureContext){ phoneCamera(); return; }
-  cam.classList.add("show"); cam.classList.remove("result","busy");
+  camEl.classList.add("show"); camEl.classList.remove("result","busy");
   $("camLive").style.display="flex"; $("camDone").style.display="none";
   $("camHint").textContent = "Rest your phone on something steady, then tap the shutter";
   try{
@@ -35,13 +35,13 @@ async function nightSettings(track){
 
 function closeCam(){
   if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
-  vid.srcObject = null; cam.classList.remove("show","result","busy"); shooting = false;
+  vid.srcObject = null; camEl.classList.remove("show","result","busy"); shooting = false;
 }
 
 // average every new frame for camSecs, then stretch the result so faint stars show up
 async function shoot(){
-  if(shooting || !stream) return; shooting = true; cam.classList.add("busy"); tick(.8);
-  const vw = vid.videoWidth, vh = vid.videoHeight; if(!vw){ shooting=false; cam.classList.remove("busy"); return; }
+  if(shooting || !stream) return; shooting = true; camEl.classList.add("busy"); tick(.8);
+  const vw = vid.videoWidth, vh = vid.videoHeight; if(!vw){ shooting=false; camEl.classList.remove("busy"); return; }
   const k = Math.min(1, 1600/Math.max(vw,vh)), w = Math.round(vw*k), h = Math.round(vh*k);
   const c = document.createElement("canvas"); c.width=w; c.height=h; const x = c.getContext("2d", {willReadFrequently:true});
   const sum = new Float32Array(w*h*3); let n = 0, lastT = -1;
@@ -61,7 +61,7 @@ async function shoot(){
     };
     grab();
   });
-  if(!n){ shooting=false; cam.classList.remove("busy"); toast("The camera didn't send any frames. Try again"); return; }
+  if(!n){ shooting=false; camEl.classList.remove("busy"); toast("The camera didn't send any frames. Try again"); return; }
   // black and white points from the brightness histogram
   const hist = new Uint32Array(256);
   for(let j=0;j<sum.length;j+=3) hist[Math.min(255, ((sum[j]+sum[j+1]+sum[j+2])/(3*n))|0)]++;
@@ -80,7 +80,7 @@ async function shoot(){
 }
 
 function showResult(msg){
-  shooting = false; cam.classList.remove("busy"); cam.classList.add("show","result");
+  shooting = false; camEl.classList.remove("busy"); camEl.classList.add("show","result");
   $("camLive").style.display="none"; $("camDone").style.display="flex"; $("camHint").textContent = msg;
 }
 
@@ -99,7 +99,7 @@ function phoneCamera(){
   if(native && native.openCamera){ closeCam(); try{ native.openCamera(); }catch(e){ caelumCameraFailed(); } return; }
   $("camInput").click();
 }
-window.caelumCameraFailed = ()=>{ toast("Couldn't open your camera app. Using Caelum's camera"); if(!cam.classList.contains("show")) openCam(); };
+window.caelumCameraFailed = ()=>{ toast("Couldn't open your camera app. Using Caelum's camera"); if(!camEl.classList.contains("show")) openCam(); };
 $("camInput").onchange = e=>{
   const f = e.target.files && e.target.files[0]; if(!f) return;
   const im = new Image(); im.onload = ()=>{ out.width=im.naturalWidth; out.height=im.naturalHeight; out.getContext("2d").drawImage(im,0,0); URL.revokeObjectURL(im.src); showResult("Photo from your camera"); };
@@ -120,7 +120,7 @@ function tapCam(){ tick(.6); if(native && native.openCamera) phoneCamera(); else
 $("camClose").onclick = ()=>{ closeCam(); tick(.4); };
 $("camShoot").onclick = shoot;
 $("camPhone").onclick = phoneCamera;
-$("camRetake").onclick = ()=>{ if(stream){ cam.classList.remove("result"); $("camLive").style.display="flex"; $("camDone").style.display="none"; $("camHint").textContent="Rest your phone on something steady, then tap the shutter"; } else openCam(); };
+$("camRetake").onclick = ()=>{ if(stream){ camEl.classList.remove("result"); $("camLive").style.display="flex"; $("camDone").style.display="none"; $("camHint").textContent="Rest your phone on something steady, then tap the shutter"; } else openCam(); };
 $("camSave").onclick = savePhoto;
 $("camLen").onclick = ()=>{ camSecs = camSecs===2? 4 : camSecs===4? 8 : 2; $("camLen").textContent = camSecs+" s"; tick(.4); };
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden && stream && !shooting) closeCam(); });
@@ -130,7 +130,7 @@ $("findChip").onclick = ()=> clearTarget();
 
 // Android back button (used by the app): close the top-most thing first
 window.caelumBack = ()=>{
-  if(cam.classList.contains("show")){ closeCam(); return true; }
+  if(camEl.classList.contains("show")){ closeCam(); return true; }
   if($("sheet").classList.contains("show")){ closeSheet(); return true; }
   if($("start").classList.contains("show")){ $("start").classList.remove("show"); return true; }
   if(tab!=="sky"){ showTab("sky"); return true; }
