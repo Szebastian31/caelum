@@ -10,8 +10,8 @@ android {
         applicationId "com.caelum.sky"
         minSdk 29
         targetSdk 36
-        versionCode 3
-        versionName "1.1.0"
+        versionCode 4
+        versionName "1.1.1"
     }
 
     // One fixed key for every build, so a new APK installs over the old one instead of
