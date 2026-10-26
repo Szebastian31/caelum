@@ -15,6 +15,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 :root{
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px); --lift:0px;
   --page:#efe8da; --ink:#1d2230; --muted:#6c6a66;
   --sky-top:#0b1433; --sky-bot:#22336b; --ground:#0a0f1f;
   --fg:#eef3ff; --fg2:rgba(238,243,255,.62); --glass:rgba(255,255,255,.10); --glass-b:rgba(255,255,255,.18);
@@ -48,8 +49,9 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(1200px
   body{padding:0;gap:0} .side{display:none}
   html,body{overscroll-behavior:none;background:#070d26}
   .phone{width:100vw;height:100vh;height:100dvh;max-height:none;border-radius:0;padding:0;box-shadow:none;aspect-ratio:auto}
-  .top{top:calc(env(safe-area-inset-top) + 14px)} .rail{top:calc(env(safe-area-inset-top) + 92px)} .panel{padding-top:calc(env(safe-area-inset-top) + 20px)}
-  .toast{top:calc(env(safe-area-inset-top) + 64px)}
+  .top{top:calc(var(--sat) + 14px)} .rail{top:calc(var(--sat) + 92px)} .panel{padding-top:calc(var(--sat) + 20px)}
+  .toast{top:calc(var(--sat) + 64px)}
+  :root{--lift:max(0px,calc(var(--sab) - 22px))}
   .screen{border-radius:0} .notch{display:none}
 }
 
@@ -73,7 +75,7 @@ canvas#sky:active{cursor:grabbing}
 .fab.on{background:var(--fg);color:var(--sky-top)}
 
 /* time ruler */
-.time{position:absolute;left:0;right:0;bottom:150px;z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.time{position:absolute;left:0;right:0;bottom:calc(150px + var(--lift));z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
 .time .label{font-size:12px;color:var(--fg2);display:flex;gap:8px;align-items:center;pointer-events:auto}
 .time .label b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
 .chip{font-size:11px;padding:3px 9px;border-radius:12px;background:var(--fg);color:var(--sky-top);font-weight:600;cursor:pointer;display:none}
@@ -83,7 +85,7 @@ canvas#sky:active{cursor:grabbing}
 .ruler::after{content:"";position:absolute;left:50%;top:3px;bottom:3px;width:2px;margin-left:-1px;border-radius:1px;background:var(--accent);box-shadow:0 0 8px var(--accent)}
 
 /* pointing bar (mini bar) */
-.pointing{position:absolute;left:12px;right:12px;bottom:90px;height:52px;border-radius:18px;z-index:6;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer}
+.pointing{position:absolute;left:12px;right:12px;bottom:calc(90px + var(--lift));height:52px;border-radius:18px;z-index:6;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer}
 .pointing .dot{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:14px}
 .pointing .t{flex:1;min-width:0}
 .pointing .t b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -91,11 +93,11 @@ canvas#sky:active{cursor:grabbing}
 .pointing .dir{font-family:var(--mono);font-size:12px;color:var(--fg2);text-align:right;line-height:1.3}
 
 /* tabs */
-.tabs{position:absolute;left:0;right:0;bottom:0;height:84px;padding:10px 30px 30px;display:flex;justify-content:space-around;z-index:20;
+.tabs{position:absolute;left:0;right:0;bottom:0;height:calc(84px + var(--lift));padding:10px 30px calc(30px + var(--lift));display:flex;justify-content:space-around;z-index:20;
   background:color-mix(in srgb,var(--sky-top) 72%,transparent);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-top:1px solid var(--glass-b)}
 
 /* first-run: start motion */
-.start{position:absolute;inset:0;z-index:45;display:none;align-items:flex-end;padding:20px 16px calc(env(safe-area-inset-bottom) + 24px);background:linear-gradient(rgba(4,8,24,0) 25%,rgba(4,8,24,.7))}
+.start{position:absolute;inset:0;z-index:45;display:none;align-items:flex-end;padding:20px 16px calc(var(--sab) + 24px);background:linear-gradient(rgba(4,8,24,0) 25%,rgba(4,8,24,.7))}
 .start.show{display:flex;animation:fade .4s ease}
 .start-card{width:100%;border-radius:28px;padding:26px 20px 18px;text-align:center;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
 .start-card svg{width:64px;height:64px;margin-bottom:10px;stroke:var(--fg);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -152,7 +154,7 @@ canvas#sky:active{cursor:grabbing}
 /* sheets */
 .scrim{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.show{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;border-radius:30px 30px 0 0;padding:10px 20px 40px;max-height:78%;overflow-y:auto;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.25,1);
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;border-radius:30px 30px 0 0;padding:10px 20px calc(40px + var(--sab));max-height:78%;overflow-y:auto;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.25,1);
   background:linear-gradient(color-mix(in srgb,var(--sky-bot) 82%,#fff 6%),var(--sky-top));border-top:1px solid var(--glass-b);scrollbar-width:none}
 .sheet.show{transform:none}
 .grab{width:38px;height:5px;border-radius:3px;background:var(--fg2);opacity:.5;margin:0 auto 14px}
@@ -179,11 +181,11 @@ canvas#sky:active{cursor:grabbing}
 .cam video,.cam canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cam canvas{display:none;object-fit:contain;background:#000}
 .cam.result canvas{display:block}.cam.result video{visibility:hidden}
-.camTop{position:absolute;top:calc(env(safe-area-inset-top) + 50px);left:16px;right:16px;display:flex;justify-content:space-between;align-items:center}
+.camTop{position:absolute;top:calc(var(--sat) + 50px);left:16px;right:16px;display:flex;justify-content:space-between;align-items:center}
 .camX{width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:15px;cursor:pointer}
 .camMode{font-size:12px;font-weight:600;padding:6px 11px;border-radius:14px;background:rgba(255,192,97,.9);color:#2a1a00}
-.camHint{position:absolute;left:24px;right:24px;bottom:calc(env(safe-area-inset-bottom) + 150px);text-align:center;font-size:13px;line-height:1.4;color:rgba(255,255,255,.85);text-shadow:0 1px 6px #000}
-.camBar{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 40px);display:flex;align-items:center;justify-content:space-around;padding:0 18px;gap:10px}
+.camHint{position:absolute;left:24px;right:24px;bottom:calc(var(--sab) + 150px);text-align:center;font-size:13px;line-height:1.4;color:rgba(255,255,255,.85);text-shadow:0 1px 6px #000}
+.camBar{position:absolute;left:0;right:0;bottom:calc(var(--sab) + 40px);display:flex;align-items:center;justify-content:space-around;padding:0 18px;gap:10px}
 .camBar .btn{flex:1}
 .camSide{width:64px;height:48px;border-radius:14px;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:11.5px;line-height:1.2;cursor:pointer;font-family:var(--sans)}
 .shutter{width:80px;height:80px;border:0;padding:0;background:none;cursor:pointer}
@@ -197,6 +199,14 @@ canvas#sky:active{cursor:grabbing}
 
 /* atlas & glacier (light skins) tune glass */
 .light{--glass:rgba(40,30,10,.06);--glass-b:rgba(40,30,10,.14)}
+/* Red night: everything red, so nothing white or green spoils dark-adapted eyes */
+.redskin{--glass:rgba(255,50,30,.07);--glass-b:rgba(255,60,40,.18);--good:#ff5a48;--warn:#c8402f}
+.redskin .pill{background:rgba(255,60,40,.14);color:var(--fg)}
+.redskin .pill.dim{background:rgba(255,60,40,.06);color:var(--fg2)}
+.redskin .row,.redskin .tog{border-color:rgba(255,60,40,.12)}
+.redskin .row .ic{background:rgba(255,60,40,.1)!important;color:var(--fg)}
+.redskin .row .ic svg{filter:grayscale(1) brightness(.75) sepia(1) hue-rotate(-40deg) saturate(6)}
+.redskin .sw-t.on{background:#c8402f}
 .light .row,.light .tog{border-color:rgba(40,30,10,.08)}
 .light .sw-t{background:rgba(40,30,10,.15)}
 .light .tabs{background:color-mix(in srgb,var(--sky-top) 80%,transparent)}
@@ -255,7 +265,7 @@ canvas#sky:active{cursor:grabbing}
     <section class="panel" id="pTonight">
       <h2>Tonight</h2>
       <div class="sub" id="tonSub">What's worth looking up for</div>
-      <div class="card"><h3>Moon</h3><div class="moon"><canvas id="moonC" width="152" height="152"></canvas><div><div class="big" id="moonName">—</div><div class="sm" id="moonInfo">—</div></div></div></div>
+      <div class="card"><h3>Moon</h3><div class="moon"><canvas id="moonC" width="228" height="228"></canvas><div><div class="big" id="moonName">—</div><div class="sm" id="moonInfo">—</div></div></div></div>
       <div class="card"><h3>Planets</h3><div id="planetList"></div></div>
       <div class="card"><h3>Brightest stars up at 22:00</h3><div id="starList"></div></div>
       <div class="card"><h3>Easy constellations</h3><div id="constList"></div></div>
@@ -273,6 +283,7 @@ canvas#sky:active{cursor:grabbing}
       <div class="card"><h3>How accurate is this?</h3>
         <div class="honest" style="margin:0;border-style:solid">Star and planet positions are calculated on your phone for the current minute and are good to about a third of a degree, smaller than the Moon. The weak point is the phone's compass: it's usually off by 5 to 15° and worse near metal or magnets. The badge at the top shows how far off it thinks it is. Moving the phone in a figure 8 recalibrates it.</div>
       </div>
+      <p class="sub" id="verLine" style="text-align:center;margin-top:6px"></p>
     </section>
 
     <div class="tabs" id="tabs">
@@ -318,11 +329,15 @@ canvas#sky:active{cursor:grabbing}
   </div>
 </div>
 
+<script>/* ?demo=… shows a fixed, made-up night for the README screenshots (tools/screenshots.sh) */
+window.DEMO = new URLSearchParams(location.search).get("demo");
+if (window.DEMO) window.DEMO_NOW = Date.UTC(2027, 0, 15, 20, 0); // 15 January 2027, 21:00 in Poland</script>
 <script src="data.js"></script>
 <script src="astro.js"></script>
 <script src="app.js"></script>
 <script src="ui.js"></script>
 <script src="camera.js"></script>
+<script src="demo.js"></script>
 <script>if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
 </html>

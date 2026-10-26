@@ -175,3 +175,13 @@ const PLANET_INFO = {
   jupiter:{name:"Jupiter",glyph:"♃",col:"#ffe2b8",story:"Binoculars held steady show up to four of its moons as tiny dots in a line."},
   saturn:{name:"Saturn",glyph:"♄",col:"#f3d9a0",story:"Any small telescope shows the rings. In 2025 they were edge-on and are now opening up again."},
 };
+
+// Small drawn planet icons. The ♀ ♂ ♃ ♄ symbols turn into coloured emoji on many phones and Macs.
+function planetIcon(id, size){
+  const p = PLANET_INFO[id]; if(!p) return "✦";
+  const r = {mercury:4.2,venus:5.6,mars:4.8,jupiter:6.8,saturn:5.4}[id], s = size || 22;
+  const bands = id==="jupiter" ? `<path d="M6.2 10.3h11.6M5.6 13.7h12.8" stroke="rgba(120,70,30,.45)" stroke-width="1.2" stroke-linecap="round"/>` : "";
+  const ring = id==="saturn" ? `<ellipse cx="12" cy="12" rx="10.6" ry="3.4" fill="none" stroke="${p.col}" stroke-width="1.4" transform="rotate(-20 12 12)"/>` : "";
+  const cap = id==="mars" ? `<path d="M10 7.8a4.8 4.8 0 0 1 4 0" stroke="#fff" stroke-opacity=".8" stroke-width="1.2" fill="none" stroke-linecap="round"/>` : "";
+  return `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><circle cx="12" cy="12" r="${r}" fill="${p.col}" stroke="rgba(0,0,0,.28)" stroke-width=".8"/>${bands}${cap}${ring}</svg>`;
+}

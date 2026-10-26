@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.caelum.sky'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.caelum.sky"
         minSdk 29
-        targetSdk 34
-        versionCode 2
-        versionName "1.0.1"
+        targetSdk 36
+        versionCode 3
+        versionName "1.1.0"
     }
 
     // One fixed key for every build, so a new APK installs over the old one instead of
@@ -52,7 +52,7 @@ android {
 
 tasks.register('copyWebApp', Copy) {
     from(rootProject.projectDir) {
-        include 'index.html', 'data.js', 'astro.js', 'app.js', 'ui.js', 'camera.js', 'icons/icon.svg'
+        include 'index.html', 'data.js', 'astro.js', 'app.js', 'ui.js', 'camera.js', 'demo.js', 'icons/icon.svg'
     }
     into "$buildDir/generated/caelum-web/www"
 }

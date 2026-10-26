@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Caelum banner</title>
+<!-- The README banner: five real screens in phone frames. tools/screenshots.sh turns this page into screenshots/banner.png.
+     The colours follow the app's Glacier skin (index.html): pale ice-blue sky, navy ink, deep blue accent. -->
+<style>
+  :root{--top:#eef4fa;--mid:#dfeaf5;--bot:#a9c3df;--ink:#13243d;--muted:rgba(19,36,61,.62);--accent:#1f5fa8}
+  *{box-sizing:border-box;margin:0}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;position:relative;
+    background:radial-gradient(42% 60% at 18% 0%,rgba(255,255,255,.75),transparent 70%),radial-gradient(40% 55% at 88% 22%,rgba(196,214,240,.55),transparent 70%),
+      radial-gradient(70% 45% at 50% 108%,rgba(31,95,168,.16),transparent 70%),linear-gradient(180deg,var(--top),var(--mid) 52%,var(--bot))}
+  /* a quiet field of navy "chart" stars and a faint Milky Way, like Glacier draws them */
+  canvas{position:absolute;inset:0;width:1280px;height:720px}
+  header{position:absolute;left:0;right:0;top:40px;text-align:center}
+  header .row{display:inline-flex;align-items:center;gap:16px}
+  header .ico{width:60px;height:60px;border-radius:16px;display:block;box-shadow:0 12px 26px -10px rgba(19,36,61,.45),0 0 0 1px rgba(19,36,61,.08)}
+  h1{font-family:"New York","Iowan Old Style",Palatino,Georgia,serif;font-weight:400;font-size:62px;letter-spacing:-1px;line-height:1}
+  header p{margin-top:12px;font-size:19px;font-weight:500;color:var(--muted)}
+  .phones{position:absolute;left:0;right:0;top:196px;height:640px}
+  .phone{position:absolute;top:0;width:250px;aspect-ratio:390/844;border-radius:42px;padding:9px;background:#0b1424;
+    box-shadow:0 0 0 1.5px rgba(255,255,255,.22) inset,0 40px 70px -28px rgba(19,36,61,.55),0 0 0 1px rgba(19,36,61,.25)}
+  .phone img{display:block;width:100%;height:100%;border-radius:34px;object-fit:cover;object-position:top}
+  .phone::before{content:"";position:absolute;top:18px;left:50%;width:74px;height:22px;margin-left:-37px;border-radius:12px;background:#070a14;z-index:2}
+  .p1{left:110px;transform:translateY(70px) rotate(-6deg)}
+  .p2{left:330px;transform:translateY(26px) rotate(-2.5deg)}
+  .p3{left:515px;z-index:3}
+  .p4{left:700px;transform:translateY(26px) rotate(2.5deg)}
+  .p5{left:920px;transform:translateY(70px) rotate(6deg)}
+  .p2,.p4{z-index:2}
+</style>
+</head>
+<body>
+<canvas id="c" width="2560" height="1440"></canvas>
+<header>
+  <div class="row"><img class="ico" src="../icons/icon-512.png" alt=""><h1>Caelum</h1></div>
+  <p>Hold your phone up and the real sky lines up behind the glass.</p>
+</header>
+<div class="phones">
+  <div class="phone p1"><img src="../screenshots/north.png" alt=""></div>
+  <div class="phone p2"><img src="../screenshots/planet.png" alt=""></div>
+  <div class="phone p3"><img src="../screenshots/sky-red.png" alt=""></div>
+  <div class="phone p4"><img src="../screenshots/star.png" alt=""></div>
+  <div class="phone p5"><img src="../screenshots/tonight.png" alt=""></div>
+</div>
+<script>
+  // the same seeded stars every time, so the banner only changes when the app does
+  const x = document.getElementById('c').getContext('2d'); x.scale(2, 2);
+  let s = 11; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 220; i++) {
+    const px = r() * 1280, py = r() * 720, m = r();
+    x.globalAlpha = 0.18 + m * 0.5; x.fillStyle = m > 0.9 ? '#1f5fa8' : '#13243d';
+    x.beginPath(); x.arc(px, py, 0.4 + m * m * 1.5, 0, 7); x.fill();
+  }
+  // a few constellation-style lines, in Glacier's line colour
+  x.globalAlpha = 1; x.strokeStyle = 'rgba(25,60,110,.16)'; x.lineWidth = 1;
+  [[[70,120],[130,90],[190,130],[160,190]], [[1090,110],[1150,150],[1210,120],[1240,180]], [[60,520],[120,470],[110,410]], [[1180,480],[1230,430],[1200,380]]]
+    .forEach(l => { x.beginPath(); l.forEach(([a,b],i) => i ? x.lineTo(a,b) : x.moveTo(a,b)); x.stroke(); l.forEach(([a,b]) => { x.fillStyle='rgba(19,36,61,.55)'; x.beginPath(); x.arc(a,b,1.6,0,7); x.fill(); }); });
+  x.globalCompositeOperation = 'multiply';
+  for (let i = 0; i < 160; i++) {
+    const t = r(), px = t * 1400 - 60, py = 620 - t * 560 + (r() - 0.5) * 120, rad = 30 + r() * 60;
+    const g = x.createRadialGradient(px, py, 0, px, py, rad);
+    g.addColorStop(0, 'rgba(40,80,140,.05)'); g.addColorStop(1, 'rgba(40,80,140,0)');
+    x.fillStyle = g; x.fillRect(px - rad, py - rad, rad * 2, rad * 2);
+  }
+</script>
+</body>
+</html>
