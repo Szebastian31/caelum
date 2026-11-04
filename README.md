@@ -88,9 +88,13 @@ Everything stays on your phone. Your location, motion data and photos are used o
 
 Found a bug? [Open an issue](https://github.com/Szebastian31/caelum/issues) and describe what happened, which phone you use and which browser. If the Android app stopped, it shows the error the next time you open it: tap **Share** and paste it into the issue.
 
+## License
+
+Released under the [MIT License](LICENSE).
+
 ---
 
-_Caelum is Latin for "sky". It's a sibling to Consensus Weather, Kalendae, Augur, Fidelis, Vestis and Hora._
+_Caelum is Latin for "sky". It's a sibling to Hora, Consensus Weather, Augur, Annales, Kalendae and Fidelis, all one tap away in [Hub](https://github.com/Szebastian31/hub)._
 
 <details>
 
@@ -111,8 +115,9 @@ The interface is plain HTML, CSS and JavaScript, hosted on GitHub Pages. The And
 | `icons/` | App icons |
 | `tools/screenshots.sh` | Makes everything in `screenshots/` from the real app |
 | `app/` | Android app: WebView shell, edge to edge, camera app, gallery saving, crash screen |
-| `keystore/` | The signing key, so each APK installs over the last one |
 | `.github/workflows/build.yml` | Builds the APK and publishes it as a release |
+
+**Signing.** Builds are signed with the family key. It never lives in git: GitHub builds read it from the `FAMILY_*` secrets, local builds from `~/.gradle/gradle.properties`. Every build installs over the last one.
 
 After changing any file, bump `VERSION` in `sw.js` so installed web copies update, and `versionName` + `versionCode` in `app/build.gradle` for a new APK release. If you add a `.js` file, add it to `index.html`, `sw.js` and the `copyWebApp` list in `app/build.gradle`.
 
