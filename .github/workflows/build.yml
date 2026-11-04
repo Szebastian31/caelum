@@ -8,6 +8,13 @@ on:
 permissions:
   contents: write
 
+env:
+  # the family signing key, read by the app build file
+  FAMILY_KEYSTORE_B64: ${{ secrets.FAMILY_KEYSTORE_B64 }}
+  FAMILY_KEYSTORE_PASSWORD: ${{ secrets.FAMILY_KEYSTORE_PASSWORD }}
+  FAMILY_KEY_PASSWORD: ${{ secrets.FAMILY_KEY_PASSWORD }}
+  FAMILY_KEY_ALIAS: ${{ secrets.FAMILY_KEY_ALIAS }}
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -43,20 +50,6 @@ jobs:
 
       # Create the signing key on the first run and commit it, so every later APK is signed the same way
       # and installs as an update. [skip ci] stops that commit from starting another build.
-      - name: Create signing key (first run only)
-        run: |
-          if [ ! -f keystore/caelum.keystore ]; then
-            mkdir -p keystore
-            keytool -genkeypair -keystore keystore/caelum.keystore -storetype PKCS12 \
-              -storepass caelum-sky -keypass caelum-sky -alias caelum \
-              -keyalg RSA -keysize 2048 -validity 20000 -dname "CN=Caelum, O=Szebastian31"
-            git config user.name "github-actions[bot]"
-            git config user.email "41898599+github-actions[bot]@users.noreply.github.com"
-            git add keystore/caelum.keystore
-            git commit -m "Add Caelum signing key [skip ci]"
-            git push
-          fi
-
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
 
