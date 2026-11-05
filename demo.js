@@ -24,7 +24,7 @@ const SCENES = {
   $("start").classList.remove("show");
   S.offsetMin = 0; S.place = "Gliwice"; S.lat = 50.294; S.lon = 18.665;
   applySkin(skin);
-  $("verLine").textContent = "Caelum 1.1.1 · Android app";
+  $("verLine").textContent = t("Caelum {v} · Android app",{v:"1.3.0"});
 
   // a phone status bar and gesture bar, so the pictures look like real screenshots
   document.documentElement.style.setProperty("--sat","44px");
@@ -93,8 +93,8 @@ const SCENES = {
       x.putImageData(img, 0, 0);
       $("cam").classList.add("show","result");
       $("camLive").style.display = "none"; $("camDone").style.display = "flex";
-      $("camMode").textContent = "Night · long exposure";
-      $("camHint").textContent = "52 frames stacked over 4 s";
+      $("camMode").textContent = t("Night · long exposure");
+      $("camHint").textContent = t("{n} frames stacked over {s} s",{n:52,s:4});
     }, 900);
   }
 })();
@@ -103,5 +103,5 @@ const SCENES = {
 (function(){
   if(window.DEMO) return;
   const v = window.CaelumNative && CaelumNative.version ? CaelumNative.version() : "";
-  $("verLine").textContent = v ? `Caelum ${v} · Android app` : "Caelum · web app";
+  $("verLine").textContent = v ? t("Caelum {v} · Android app",{v}) : t("Caelum · web app");
 })();

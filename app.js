@@ -18,6 +18,10 @@ const STAR_COL = {b:"#cfe0ff", w:"#ffffff", y:"#fff1c9", o:"#ffd2a0", r:"#ffb08a
 const INK_COL = {b:"#1d3a7a", w:"#1d2230", y:"#5a4310", o:"#7a3d12", r:"#8a2412"};
 
 // ---------- catalogue ----------
+// constellation and planet names, the easy-to-spot hints and the stories, in the chosen language (star names stay)
+for (const c of Object.values(CONST)) { c.en = c.name; c.name = t(c.name); if (c.easy) c.easy = t(c.easy); c.best = t(c.best); }
+for (const k in STORIES) STORIES[k] = t(STORIES[k]);
+for (const p of Object.values(PLANET_INFO)) { p.en = p.name; p.name = t(p.name); p.story = t(p.story); }
 const YEARS = (Date.now() - Date.UTC(2000,0,1,12))/31557600000;
 const STARS = STARS_RAW.map(([id,name,ra,dec,mag,con,dist,col]) => {
   const [r,d] = precess(ra*15, dec, YEARS);
@@ -27,8 +31,8 @@ const BYID = Object.fromEntries(STARS.map(s=>[s.id,s]));
 const LINES = []; for(const [k,c] of Object.entries(CONST)) for(const p of c.lines.split(" ").filter(Boolean)){ const [a,b]=p.split("-"); if(BYID[a]&&BYID[b]) LINES.push([BYID[a],BYID[b],k]); }
 const MW = makeMilkyWay();
 const BODIES = ["mercury","venus","mars","jupiter","saturn"].map(id=>({id,type:"planet",...PLANET_INFO[id]}));
-const MOON = {id:"moon",type:"moon",name:"Moon"}, SUN = {id:"sun",type:"sun",name:"Sun"};
-const CONSTS = Object.entries(CONST).filter(([k,c])=>c.lines).map(([k,c])=>({id:"c_"+k,key:k,type:"const",name:c.name}));
+const MOON = {id:"moon",type:"moon",name:t("Moon"),en:"Moon"}, SUN = {id:"sun",type:"sun",name:t("Sun"),en:"Sun"};
+const CONSTS = Object.entries(CONST).filter(([k,c])=>c.lines).map(([k,c])=>({id:"c_"+k,key:k,type:"const",name:c.name,en:c.en}));
 
 let lastKey = "";
 function simTime(){ return new Date((window.DEMO_NOW || Date.now()) + S.offsetMin*60000); }
@@ -174,7 +178,7 @@ function drawMoon(sk, zf){
   ctx.arc(0,0,r,-Math.PI/2,Math.PI/2,false);           // lit half faces the Sun (+x)
   ctx.ellipse(0,0,Math.abs(k)*r,r,0,Math.PI/2,-Math.PI/2,k>0);
   ctx.fill(); ctx.restore();
-  if(S.labels){ ctx.globalAlpha=below?.75:1; ctx.fillStyle=sk.label; ctx.font="600 12px -apple-system,sans-serif"; ctx.fillText("Moon",p.x+r+6,p.y+4); ctx.globalAlpha=1; }
+  if(S.labels){ ctx.globalAlpha=below?.75:1; ctx.fillStyle=sk.label; ctx.font="600 12px -apple-system,sans-serif"; ctx.fillText(MOON.name,p.x+r+6,p.y+4); ctx.globalAlpha=1; }
   screenObjs.push({o:MOON,x:p.x,y:p.y});
 }
 function drawSun(sk, zf){
@@ -232,9 +236,9 @@ function drawTarget(sk, ts){
     ctx.save(); ctx.translate(x,y); ctx.rotate(a); ctx.fillStyle=sk.accent;
     ctx.beginPath(); ctx.moveTo(16,0); ctx.lineTo(-8,-11); ctx.lineTo(-3,0); ctx.lineTo(-8,11); ctx.closePath(); ctx.fill(); ctx.restore();
     ctx.fillStyle=sk.accent; ctx.font="600 11px -apple-system,sans-serif"; ctx.textAlign="center";
-    ctx.fillText(`${o.name} · ${Math.round(ang)}°`, x - Math.cos(a)*30, y - Math.sin(a)*30 + 4); ctx.textAlign="left";
+    ctx.fillText(`${o.name} · ${int(Math.round(ang))}°`, x - Math.cos(a)*30, y - Math.sin(a)*30 + 4); ctx.textAlign="left";
   }
-  if(ang < 4 && !S.found){ S.found = true; tick(1); buzz([18,40,18]); toast(`Found ${o.name} · tap it to stop`); }
+  if(ang < 4 && !S.found){ S.found = true; tick(1); buzz([18,40,18]); toast(t("Found {name} · tap it to stop",{name:o.name})); }
   if(ang > 9) S.found = false;
 }
 
@@ -245,15 +249,15 @@ function updatePointing(alt, az){
   let best=null, bd=1e9;
   for(const so of screenObjs){ if(so.weak) continue; const d=Math.hypot(so.x-W/2, so.y-H*0.46); const lim = so.o.type==="star"? 40 : 55; if(d<lim && d<bd){bd=d;best=so.o;} }
   let con=null, cd=1e9; for(const c of CONSTS){ if(!c.v) continue; const d=Math.acos(Math.max(-1,Math.min(1,dot(c.v,cam.f))))*R2D; if(d<cd){cd=d;con=c;} }
-  $("pDir").innerHTML = `${compass(az)} ${Math.round(az)}°<br>${alt>=0?"▲":"▼"} ${Math.abs(Math.round(alt))}°`;
+  $("pDir").innerHTML = `${compass(az)} ${int(Math.round(az))}°<br>${alt>=0?"▲":"▼"} ${int(Math.abs(Math.round(alt)))}°`;
   if(best){ S.pointing = best;
     $("pDot").innerHTML = best.type==="planet"? planetIcon(best.id,20) : best.type==="moon"? "☾" : best.type==="sun"?"☀&#xFE0E;":"✦";
     $("pName").textContent = best.name;
-    $("pSub").textContent = (best.type==="star"? `Star in ${CONST[best.con].name} · tap for more` : best.type==="planet"? "Planet · tap for more" : best.type==="moon"? `${moonPhaseName(MOON.elong)} · tap for more` : "Don't look at it directly") + (best.alt<0? " · below the horizon" : "");
-  } else if(con && cd<16){ S.pointing = con; $("pDot").textContent="✧"; $("pName").textContent=con.name; $("pSub").textContent="Constellation · tap for more"; }
-  else { S.pointing = null; $("pDot").textContent="·"; $("pName").textContent = alt<-5? "The ground" : "Empty sky"; $("pSub").textContent = alt<-5? "Tilt up to see the sky above you" : "Faint stars only. Keep looking around"; }
+    $("pSub").textContent = (best.type==="star"? t("Star in {con} · tap for more",{con:CONST[best.con].name}) : best.type==="planet"? t("Planet · tap for more") : best.type==="moon"? t("{phase} · tap for more",{phase:moonPhaseName(MOON.elong)}) : t("Don't look at it directly")) + (best.alt<0? " · "+t("below the horizon") : "");
+  } else if(con && cd<16){ S.pointing = con; $("pDot").textContent="✧"; $("pName").textContent=con.name; $("pSub").textContent=t("Constellation · tap for more"); }
+  else { S.pointing = null; $("pDot").textContent="·"; $("pName").textContent = alt<-5? t("The ground") : t("Empty sky"); $("pSub").textContent = alt<-5? t("Tilt up to see the sky above you") : t("Faint stars only. Keep looking around"); }
   const isNight = darkness>0.6;
-  $("clock").textContent = `${fmtTime(simTime())} · ${isNight? "Night" : darkness>0.05? "Twilight" : "Daytime, stars hidden by sunlight"}`;
+  $("clock").textContent = `${fmtTime(simTime())} · ${isNight? t("Night") : darkness>0.05? t("Twilight") : t("Daytime, stars hidden by sunlight")}`;
 }
 
 // ---------- input: drag, zoom, tap ----------
@@ -282,11 +286,11 @@ function tapAt(x,y){
   if(best){ tick(0.6); openInfo(best); }
 }
 function clearTarget(){
-  if(!S.target) return; const n=S.target.name; S.target=null; S.found=false; updateChip(); tick(.5); toast(`Stopped finding ${n}`);
+  if(!S.target) return; const n=S.target.name; S.target=null; S.found=false; updateChip(); tick(.5); toast(t("Stopped finding {name}",{name:n}));
 }
 function updateChip(){
   const c=$("findChip"); if(!c) return;
-  if(S.target){ $("findName").textContent=S.target.name; c.classList.add("show"); } else c.classList.remove("show");
+  if(S.target){ $("findLine").innerHTML=t("Finding {name}",{name:`<b id="findName"></b>`}); $("findName").textContent=S.target.name; c.classList.add("show"); } else c.classList.remove("show");
 }
 
 // ---------- motion ----------
@@ -319,26 +323,26 @@ function onOrient(e){
 }
 async function enableMotion(){
   if(S.mode==="motion"){ S.mode="drag"; const [al,az]=camAltAz(cam); S.alt=al; S.az=az; $("bMotion").classList.remove("on"); updateBadge(); return; }
-  try{ if(typeof DeviceOrientationEvent!=="undefined" && DeviceOrientationEvent.requestPermission){ const p=await DeviceOrientationEvent.requestPermission(); if(p!=="granted"){ toast("Motion access was declined"); return; } } }catch(err){}
+  try{ if(typeof DeviceOrientationEvent!=="undefined" && DeviceOrientationEvent.requestPermission){ const p=await DeviceOrientationEvent.requestPermission(); if(p!=="granted"){ toast(t("Motion access was declined")); return; } } }catch(err){}
   motionSeen=false;
   if(!listening){ window.addEventListener("ondeviceorientationabsolute" in window? "deviceorientationabsolute":"deviceorientation", onOrient); listening=true; }
   S.mode="motion"; $("bMotion").classList.add("on"); S.demo=null; gyro=null;
-  setTimeout(()=>{ if(!motionSeen){ S.mode="drag"; $("bMotion").classList.remove("on"); toast(window.isSecureContext? "No motion sensor here. On a phone it follows your hand" : "Motion needs an https address, e.g. GitHub Pages"); updateBadge(); } }, 1400);
+  setTimeout(()=>{ if(!motionSeen){ S.mode="drag"; $("bMotion").classList.remove("on"); toast(window.isSecureContext? t("No motion sensor here. On a phone it follows your hand") : t("Motion needs an https address, e.g. GitHub Pages")); updateBadge(); } }, 1400);
   updateBadge();
 }
 function updateBadge(){
   const el=$("acc"), tx=$("accTxt"); el.className="badge";
-  if(S.mode!=="motion"){ el.classList.add("idle"); tx.textContent = "Drag mode"; return; }
+  if(S.mode!=="motion"){ el.classList.add("idle"); tx.textContent = t("Drag mode"); return; }
   const a=S.compassAcc;
-  if(a==null){ el.classList.add("idle"); tx.textContent="Waiting for compass"; }
-  else if(a>=0){ tx.textContent=`Compass ±${Math.round(a)}°`; if(a>12) el.classList.add("warn"); }
-  else { el.classList.add("warn"); tx.textContent="Compass · accuracy not reported"; }
+  if(a==null){ el.classList.add("idle"); tx.textContent=t("Waiting for compass"); }
+  else if(a>=0){ tx.textContent=t("Compass ±{n}°",{n:Math.round(a)}); if(a>12) el.classList.add("warn"); }
+  else { el.classList.add("warn"); tx.textContent=t("Compass · accuracy not reported"); }
 }
 
 // demo sweep: what it feels like to move the phone around
 function runDemo(ts){
   const d=S.demo; if(!d.t0) d.t0=ts; const p=(ts-d.t0)/9000;
-  if(p>=1){ S.demo=null; toast(S.mode==="motion"? "Back to following your phone" : "On your phone, this follows your hand"); return; }
+  if(p>=1){ S.demo=null; toast(S.mode==="motion"? t("Back to following your phone") : t("On your phone, this follows your hand")); return; }
   const e = p<.5? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
   S.az = norm360(d.az + e*300 + Math.sin(p*20)*1.2); S.alt = d.alt + Math.sin(p*Math.PI*2)*22 + Math.sin(p*31)*0.8;
 }
@@ -352,7 +356,7 @@ function drawRuler(){
   const w=rc.clientWidth,h=rc.clientHeight; if(rc.width!==w*DPR){rc.width=w*DPR;rc.height=h*DPR;}
   rctx.setTransform(DPR,0,0,DPR,0,0); rctx.clearRect(0,0,w,h);
   const sk=SKINS[S.skin]; rctx.fillStyle = sk.ink? "rgba(40,30,10,.07)":"rgba(255,255,255,.07)"; rctx.fillRect(0,0,w,h);
-  const t=simTime(), m0=t.getHours()*60+t.getMinutes()+t.getSeconds()/60;
+  const now=simTime(), m0=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
   rctx.fillStyle=sk.fg; rctx.font="500 9px -apple-system,sans-serif"; rctx.textAlign="center";
   const span = w/2/PX_PER_MIN;
   for(let m=Math.floor((m0-span)/15)*15; m<=m0+span; m+=15){
@@ -362,33 +366,33 @@ function drawRuler(){
   }
   rctx.globalAlpha=1;
   const off=Math.round(S.offsetMin);
-  $("tLabel").textContent = off===0? "Now" : fmtDay(t);
-  $("tDelta").textContent = off===0? "drag to move through the night" : `${off>0?"+":"−"}${fmtDur(Math.abs(off))}`;
-  const dayNow = off===0 && darkness<0.5; $("tNow").textContent = dayNow? "See tonight" : "Back to now"; $("tNow").style.display = (Math.abs(off)>0||dayNow)? "inline-block":"none"; if(dayNow) $("tDelta").textContent="";
+  $("tLabel").textContent = off===0? t("Now") : fmtDay(now);
+  $("tDelta").textContent = off===0? t("drag to move through the night") : `${off>0?"+":"−"}${fmtDur(Math.abs(off))}`;
+  const dayNow = off===0 && darkness<0.5; $("tNow").textContent = dayNow? t("See tonight") : t("Back to now"); $("tNow").style.display = (Math.abs(off)>0||dayNow)? "inline-block":"none"; if(dayNow) $("tDelta").textContent="";
 }
 const ruler=$("ruler");
 ruler.addEventListener("pointerdown",e=>{ ruler.setPointerCapture(e.pointerId); rdrag={x:e.clientX,t:performance.now()}; rv=0; });
 ruler.addEventListener("pointermove",e=>{ if(!rdrag) return; const dx=e.clientX-rdrag.x; const dm=-dx/PX_PER_MIN; S.offsetMin+=dm; const now=performance.now(); rv = dm/Math.max(1,(now-rdrag.t)/16); rdrag={x:e.clientX,t:now};
   const hr=Math.floor((Date.now()/60000+S.offsetMin)/60); if(hr!==lastHr){ if(lastHr!=null) tick(.25); lastHr=hr; } });
 ruler.addEventListener("pointerup",()=>{ rdrag=null; });
-$("tNow").onclick=()=>{ rv=0; tick(.5); if(Math.round(S.offsetMin)===0){ const n=new Date(), t=new Date(n); t.setHours(22,0,0,0); if(t<n) t.setDate(t.getDate()+1); S.offsetMin=Math.round((t-n)/60000); toast("Tonight at 22:00"); } else S.offsetMin=0; };
+$("tNow").onclick=()=>{ rv=0; tick(.5); if(Math.round(S.offsetMin)===0){ const n=new Date(), at=new Date(n); at.setHours(22,0,0,0); if(at<n) at.setDate(at.getDate()+1); S.offsetMin=Math.round((at-n)/60000); toast(t("Tonight at {time}",{time:fmtTime(at)})); } else S.offsetMin=0; };
 
 // ---------- helpers ----------
-const fmtTime = t => t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-const fmtDay = t => t.toLocaleDateString("en-GB",{weekday:"short"})+" "+fmtTime(t);
-const fmtDur = m => m>=1440? `${Math.floor(m/1440)}d ${Math.floor(m%1440/60)}h` : m>=60? `${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m` : `${m}m`;
+const fmtTime = t => t.toLocaleTimeString(LOCALE,{hour:"2-digit",minute:"2-digit"});
+const fmtDay = t => t.toLocaleDateString(LOCALE,{weekday:"short"})+" "+fmtTime(t);
+const fmtDur = m => m>=1440? t("{d}d {h}h",{d:Math.floor(m/1440),h:Math.floor(m%1440/60)}) : m>=60? t("{h}h {m}m",{h:Math.floor(m/60),m:int(m%60).padStart(2,int(0))}) : t("{m}m",{m});
 function moonPhaseName(e){ e=norm360(e);
-  if(e<10||e>350) return "New Moon"; if(e<80) return "Waxing crescent"; if(e<100) return "First quarter"; if(e<170) return "Waxing gibbous";
-  if(e<190) return "Full Moon"; if(e<260) return "Waning gibbous"; if(e<280) return "Last quarter"; return "Waning crescent"; }
+  if(e<10||e>350) return t("New Moon"); if(e<80) return t("Waxing crescent"); if(e<100) return t("First quarter"); if(e<170) return t("Waxing gibbous");
+  if(e<190) return t("Full Moon"); if(e<260) return t("Waning gibbous"); if(e<280) return t("Last quarter"); return t("Waning crescent"); }
 let actx=null;
 function tick(v=.5){ if(!S.sounds) return; try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(), g=actx.createGain();
   o.type="triangle"; o.frequency.value=1800+v*900; g.gain.setValueAtTime(.05*v,actx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.05);
   o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.06); buzz(8); }catch(e){} }
 function buzz(p){ if(!S.haptics) return; if(window.CaelumNative && CaelumNative.vibrate) CaelumNative.vibrate(String(p)); else if(navigator.vibrate) navigator.vibrate(p); }
-let toastT; function toast(m){ if(window.DEMO) return; const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
+let toastT; function toast(m){ if(window.DEMO) return; const el=$("toast"); el.textContent=m; el.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),2200); }
 
 $("bMotion").onclick = enableMotion;
-$("bLines").onclick = ()=>{ S.lines=!S.lines; $("bLines").classList.toggle("on",!S.lines); tick(); toast(S.lines?"Constellations on":"Constellations off"); };
+$("bLines").onclick = ()=>{ S.lines=!S.lines; $("bLines").classList.toggle("on",!S.lines); tick(); toast(S.lines?t("Constellations on"):t("Constellations off")); };
 $("bDemo").onclick = ()=>{ if(S.demo){ S.demo=null; tick(.4); return; } const [al,az]=camAltAz(cam); S.alt=Math.max(-20,Math.min(60,al)); S.az=az; S.demo={az:S.az,alt:S.alt}; tick(); };
 
 // ---------- start in motion mode on phones ----------

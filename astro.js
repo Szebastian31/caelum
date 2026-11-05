@@ -141,5 +141,5 @@ function riseSet(getRaDec, start, lat, lon){
 }
 
 function compass(az){
-  return ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(az/22.5)%16];
+  return t(["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(az/22.5)%16]);
 }

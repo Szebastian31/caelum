@@ -9,13 +9,13 @@ async function openCam(){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.isSecureContext){ phoneCamera(); return; }
   camEl.classList.add("show"); camEl.classList.remove("result","busy");
   $("camLive").style.display="flex"; $("camDone").style.display="none";
-  $("camHint").textContent = "Rest your phone on something steady, then tap the shutter";
+  $("camHint").textContent = t("Rest your phone on something steady, then tap the shutter");
   try{
     stream = await navigator.mediaDevices.getUserMedia({audio:false, video:{facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1440}}});
     vid.srcObject = stream; await vid.play().catch(()=>{});
     $("camMode").textContent = await nightSettings(stream.getVideoTracks()[0]);
   }catch(e){
-    closeCam(); toast("Couldn't open the camera. Opening your phone's camera instead"); setTimeout(phoneCamera, 600);
+    closeCam(); toast(t("Couldn't open the camera. Opening your phone's camera instead")); setTimeout(phoneCamera, 600);
   }
 }
 
@@ -30,7 +30,7 @@ async function nightSettings(track){
     tries.push({focusMode:"manual", focusDistance:caps.focusDistance.max});
   let longExp = false;
   for(const t of tries){ try{ await track.applyConstraints({advanced:[t]}); if(t.exposureTime) longExp = true; }catch(e){} }
-  return longExp ? "Night · long exposure" : "Night · stacking";
+  return longExp ? t("Night · long exposure") : t("Night · stacking");
 }
 
 function closeCam(){
@@ -46,7 +46,7 @@ async function shoot(){
   const c = document.createElement("canvas"); c.width=w; c.height=h; const x = c.getContext("2d", {willReadFrequently:true});
   const sum = new Float32Array(w*h*3); let n = 0, lastT = -1;
   const t0 = performance.now(), dur = camSecs*1000, prog = $("camProg");
-  $("camHint").textContent = "Hold still…";
+  $("camHint").textContent = t("Hold still…");
   await new Promise(done=>{
     const grab = ()=>{
       const el = performance.now() - t0;
@@ -61,7 +61,7 @@ async function shoot(){
     };
     grab();
   });
-  if(!n){ shooting=false; camEl.classList.remove("busy"); toast("The camera didn't send any frames. Try again"); return; }
+  if(!n){ shooting=false; camEl.classList.remove("busy"); toast(t("The camera didn't send any frames. Try again")); return; }
   // black and white points from the brightness histogram
   const hist = new Uint32Array(256);
   for(let j=0;j<sum.length;j+=3) hist[Math.min(255, ((sum[j]+sum[j+1]+sum[j+2])/(3*n))|0)]++;
@@ -75,7 +75,7 @@ async function shoot(){
     o[i]=lut[Math.min(2559,(sum[j]/n*10)|0)]; o[i+1]=lut[Math.min(2559,(sum[j+1]/n*10)|0)]; o[i+2]=lut[Math.min(2559,(sum[j+2]/n*10)|0)]; o[i+3]=255;
   }
   out.width=w; out.height=h; out.getContext("2d").putImageData(img,0,0);
-  prog.style.strokeDashoffset = 226.2; showResult(`${n} frames stacked over ${camSecs} s`);
+  prog.style.strokeDashoffset = 226.2; showResult(t("{n} frames stacked over {s} s",{n,s:camSecs}));
   buzz([20,40,20]); tick(1);
 }
 
@@ -87,10 +87,10 @@ function showResult(msg){
 async function savePhoto(){
   const name = `Caelum_${new Date().toISOString().slice(0,16).replace(/[-:T]/g,"")}.jpg`;
   const data = out.toDataURL("image/jpeg", 0.93);
-  if(native && native.savePhoto){ const ok = native.savePhoto(data.split(",")[1], name); toast(ok ? "Saved to Pictures/Caelum" : "Couldn't save the photo"); return; }
+  if(native && native.savePhoto){ const ok = native.savePhoto(data.split(",")[1], name); toast(ok ? t("Saved to Pictures/Caelum") : t("Couldn't save the photo")); return; }
   const blob = await (await fetch(data)).blob(), file = new File([blob], name, {type:"image/jpeg"});
   if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Caelum"}); return; }catch(e){ if(e.name==="AbortError") return; } }
-  const a = document.createElement("a"); a.href = data; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast("Photo downloaded");
+  const a = document.createElement("a"); a.href = data; a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast(t("Photo downloaded"));
 }
 
 // the phone's own camera app. Only the Android app can open it fully, with all its modes including Night.
@@ -99,10 +99,10 @@ function phoneCamera(){
   if(native && native.openCamera){ closeCam(); try{ native.openCamera(); }catch(e){ caelumCameraFailed(); } return; }
   $("camInput").click();
 }
-window.caelumCameraFailed = ()=>{ toast("Couldn't open your camera app. Using Caelum's camera"); if(!camEl.classList.contains("show")) openCam(); };
+window.caelumCameraFailed = ()=>{ toast(t("Couldn't open your camera app. Using Caelum's camera")); if(!camEl.classList.contains("show")) openCam(); };
 $("camInput").onchange = e=>{
   const f = e.target.files && e.target.files[0]; if(!f) return;
-  const im = new Image(); im.onload = ()=>{ out.width=im.naturalWidth; out.height=im.naturalHeight; out.getContext("2d").drawImage(im,0,0); URL.revokeObjectURL(im.src); showResult("Photo from your camera"); };
+  const im = new Image(); im.onload = ()=>{ out.width=im.naturalWidth; out.height=im.naturalHeight; out.getContext("2d").drawImage(im,0,0); URL.revokeObjectURL(im.src); showResult(t("Photo from your camera")); };
   im.src = URL.createObjectURL(f); e.target.value = "";
 };
 
@@ -120,9 +120,10 @@ function tapCam(){ tick(.6); if(native && native.openCamera) phoneCamera(); else
 $("camClose").onclick = ()=>{ closeCam(); tick(.4); };
 $("camShoot").onclick = shoot;
 $("camPhone").onclick = phoneCamera;
-$("camRetake").onclick = ()=>{ if(stream){ camEl.classList.remove("result"); $("camLive").style.display="flex"; $("camDone").style.display="none"; $("camHint").textContent="Rest your phone on something steady, then tap the shutter"; } else openCam(); };
+$("camRetake").onclick = ()=>{ if(stream){ camEl.classList.remove("result"); $("camLive").style.display="flex"; $("camDone").style.display="none"; $("camHint").textContent=t("Rest your phone on something steady, then tap the shutter"); } else openCam(); };
 $("camSave").onclick = savePhoto;
-$("camLen").onclick = ()=>{ camSecs = camSecs===2? 4 : camSecs===4? 8 : 2; $("camLen").textContent = camSecs+" s"; tick(.4); };
+$("camLen").onclick = ()=>{ camSecs = camSecs===2? 4 : camSecs===4? 8 : 2; $("camLen").textContent = t("{s} s",{s:camSecs}); tick(.4); };
+$("camLen").textContent = t("{s} s",{s:camSecs});
 document.addEventListener("visibilitychange", ()=>{ if(document.hidden && stream && !shooting) closeCam(); });
 
 // "Finding …" chip: tap to stop

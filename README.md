@@ -28,6 +28,7 @@ No app store, no account, no ads. Get the **Android app**, or use Caelum in any 
 - **📷 Night photos.** In the Android app, the camera button opens your phone's own camera, where you can switch on its Night mode. Press and hold it for Caelum's night camera, which stacks 2, 4 or 8 seconds of frames to pull faint stars out of the noise.
 - **▶️ See it move.** The play button sweeps slowly around the whole sky, even while motion is on.
 - **🎨 Five skins.** Indigo, Dusk, **Atlas** (an old paper star chart), Glacier and **Red night**, which keeps your eyes used to the dark. The sky runs edge to edge, behind the status bar.
+- **🗣️ 33 languages.** Caelum follows your phone's language, or pick one under **Profile → Language**. Constellations and planets use their local names, numbers use local digits, and Arabic and Persian run right to left. The translations are machine-made, so corrections are welcome.
 
 ## Screens
 
