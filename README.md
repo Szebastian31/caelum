@@ -6,6 +6,8 @@
 
 <p align="center"><a href="https://github.com/Szebastian31/caelum/releases/latest"><img src="https://img.shields.io/badge/Download%20APK-Android-24357a?style=for-the-badge&logo=android&logoColor=white" alt="Download APK"></a> <a href="https://szebastian31.github.io/caelum/"><img src="https://img.shields.io/badge/Open%20in%20browser-iPhone%20%26%20web-3a6fb0?style=for-the-badge" alt="Open Caelum"></a></p>
 
+**Or get updates automatically with Obtainium:** [Add Caelum to Obtainium](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22com.caelum.sky%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FSzebastian31%2Fcaelum%22%2C%22author%22%3A%22Szebastian31%22%2C%22name%22%3A%22Caelum%22%7D)
+
 No app store, no account, no ads. Get the **Android app**, or use Caelum in any phone's browser. Everything stays on your phone.
 
 ---
